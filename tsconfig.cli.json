@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "outDir": "dist/cli",
+    "rootDir": "src/cli",
+    "target": "es2022",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+   "include": ["src/cli/**/*.ts"]
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "file": "demo/server/index.ts",
+    "prompt": "i have basic server route. Go ahead for more routes ."
+  },
+  {
+    "file": "demo/components/Hello.tsx",
+    "prompt": "Create a React component using class."
+  },
+  {
+    "file": "demo/utils/logger.ts",
+    "prompt": "A logger utility with date."
+  }
+]

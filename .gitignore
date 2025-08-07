@@ -1,0 +1,13 @@
+.llm/
+.vscode/
+/backend-server/node_modules/
+/backend-server/.env
+/backend-server/package-lock.json
+/dist/
+node_modules/
+/out/
+/templates/
+*.env
+demo/
+/package-lock.json
+/vsc-extension-quickstart.md
