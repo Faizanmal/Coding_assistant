@@ -99,6 +99,3 @@ Built with ❤️ by Malik Faizan
 GitHub: [github.com/faizanmal](https://github.com/faizanmal)
 LinkedIn: [linkedin.com/in/faizan](https://linkedin.com/in/faizanmalikdelhi)
 
-- Include example screenshots or GIFs of the features
-
-I can also convert this to a 
