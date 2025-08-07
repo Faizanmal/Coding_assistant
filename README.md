@@ -1,71 +1,104 @@
-# Coding README
+# 💡 AI Coding – VS Code Extension
 
-This is the README for your extension "Coding". After writing up a brief description, we recommend including the following sections.
-
-## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+AI Coding Assistant is a powerful VS Code extension that supercharges your development workflow using state-of-the-art AI models. Whether you're coding, debugging, generating, or learning – this extension provides intelligent assistance **right inside the editor and CLI**.
 
 ---
 
-## Following extension guidelines
+## ✨ Features
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+### 🧠 In-Editor AI Tools
+1. **Inline Code Suggestions** – Get context-aware code completions as you type.
+2. **In-Editor Code Generator** – Generate new code blocks directly in the editor.
+3. **Code Corrector & Replacer** – Select buggy code and replace it with an AI-generated correct version.
+4. **Code Explainer** – Understand complex code via AI-powered explanations shown in a dedicated chat panel.
+5. **Chat Interface (Sidebar & Panel)** – Ask coding questions, troubleshoot, or brainstorm right within VS Code.
+6. **Chat History Management** – Automatically stores your chats. You can delete specific chats or clear all.
+7. **Multiple Model Providers** – Choose between:
+   - **Groq**
+   - **Together.ai**
+   - **Cerebras**
+   - **OpenAI**
+   - **Mistral**
+   - **Meta (LLaMA and others)**
+8. **Markdown Styling Highlighter** – Beautifully renders markdown responses from the AI.
+9. **Tavily Web Search Integration** – Fetch real-time info from the web to enhance your prompts.
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+---
 
-## Working with Markdown
+## ⚙️ CLI Commands
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+You don’t need to open VS Code to use the extension – it comes with a powerful CLI interface.
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+```bash
+# Format:
+$ myext <command> [options]
+````
 
-## For more information
+### 🔧 Command List
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+| Command         | Description                                                                   |
+| --------------- | ----------------------------------------------------------------------------- |
+| `analyze`       | Analyze a file/folder for issues and output a detailed log.                   |
+| `ask`           | Live terminal chat with AI (context-aware).                                   |
+| `explain-diffs` | Explain the difference between two files.                                     |
+| `generate`      | Generate code from predefined templates.                                      |
+| `generatefile`  | Generate multiple code files at once.                                         |
+| `generateTest`  | Create test cases for the given code automatically.                           |
+| `code-refactor` | Refactor code in a specific file intelligently.                               |
+| `replace`       | Replace incorrect code with a corrected version.                              |
+| `ask_context`   | Full project-aware querying using embeddings (class/function level chunking). |
 
-**Enjoy!**
+---
+
+## 🚀 Installation
+
+1. Clone the repository.
+2. Follow the setup instructions to configure API keys for model providers.
+3. Enable optional Tavily integration for web search.
+
+---
+
+## 🔐 Model Configuration
+
+To use multiple providers, create a .env file in root directory and fill & ceate Apis keys <br> Get API Keys from thier Official sites:
+
+```.env
+API_KEY='Groq-Api-here'
+Together_api='together api here'
+Open_router_api='openAI api here'
+Mistral_api='mistral api here'
+Cerebras_api='cerebras api here'
+Tavily_api='tavily api here'
+Hug_face='HuggingFace Secret Token here'
+---
+
+## 🧩 Roadmap
+
+* [ ] Add Git diff view in explain-diffs
+* [ ] Enable multi-turn CLI chat memory
+* [ ] VS Code snippets integration
+* [ ] Plugin marketplace for user-generated templates/models
+
+---
+
+## 📄 License
+
+MIT License
+
+---
+
+## 🤝 Contributing
+
+Pull requests and feature suggestions are welcome! Open an issue or create a PR if you'd like to contribute.
+
+---
+
+## 🔗 Connect
+
+Built with ❤️ by Malik Faizan
+GitHub: [github.com/faizanmal](https://github.com/faizanmal)
+LinkedIn: [linkedin.com/in/faizan](https://linkedin.com/in/faizanmalikdelhi)
+
+- Include example screenshots or GIFs of the features
+
+I can also convert this to a 
