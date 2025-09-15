@@ -294,9 +294,9 @@ export class ChatPanel {
         <label><input type="checkbox" id="use-web" />Use Web Search</label>
 
 			<select id="model-select"></select>
-		<button onclick="sendPrompt()">Send</button>
+		<button id="send-button">Send</button>
 		</div>
-		<button onclick="vscode.postMessage({ command: 'clearChatHistory' })">
+		<button id="clear-history-button">
 		Clear History
 		</button>
 	</div>
@@ -315,6 +315,12 @@ export class ChatPanel {
                         document.getElementById('model-select').value = state.selectedModel;
                     }, 100); // slight delay to ensure model options are populated
                 }}
+
+			document.getElementById('send-button').addEventListener('click', sendPrompt);
+			document.getElementById('clear-history-button').addEventListener('click', () => {
+				vscode.postMessage({ command: 'clearChatHistory' });
+			});
+
             });
 
         const providerModelMap = {
@@ -432,6 +438,34 @@ export class ChatPanel {
     			btn.addEventListener('click', (e) => {
       				const index = e.target.getAttribute('data-index');
       				vscode.postMessage({ command: 'deleteMessage', index: parseInt(index) });
+    			});
+  		});
+		});
+
+		</script>
+	</body>
+	</html>`;
+    }
+
+    private _getChatHistory(): { role: string; content: string }[] {
+        return this._context.globalState.get('AIChatHistory', []);
+    }
+
+    private _saveChatHistory(history: { role: string; content: string }[]) {
+        this._context.globalState.update('AIChatHistory', history);
+    }
+
+    public dispose() {
+        ChatPanel.currentPanel = undefined;
+        this._panel.dispose();
+        while (this._disposables.length) {
+            const x = this._disposables.pop();
+            if (x) {
+                x.dispose();
+            }
+        }
+    }
+}, index: parseInt(index) });
     			});
   			});
 		});

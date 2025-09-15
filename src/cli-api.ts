@@ -1,19 +1,44 @@
-// import { generateFromPrompt } from './llm/extension';
-// import { savePromptToHistory } from './history';
-import { callAI } from "./codegenerator";
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 
-export async function handlePrompt(prompt: string): Promise<string> {
-  const result = await callAI(prompt);
-  savePromptToHistory(prompt, result);
-  return result;
-}
+// Load environment variables
+const envPath = path.resolve(__dirname, '..', '..', 'backend-server', '.env');
+dotenv.config({ path: envPath });
 
-const history: { prompt: string; result: string }[] = [];
+const api = process.env.API_KEY;
 
-export function savePromptToHistory(prompt: string, result: string) {
-  history.push({ prompt, result });
-}
+export async function callAI(prompt: string): Promise<string> {
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${api}`
+      },
+      body: JSON.stringify({
+        model: "llama3-70b-8192",
+        messages: [
+          { role: 'system', content: 'You are a helpful code assistant. Provide only the code, no explanation, no markdown formatting. Add comments in code if needed.' },
+          { role: 'user', content: prompt }
+        ]
+      })
+    });
 
-export function getHistory() {
-  return history;
+    type AIResponse = {
+      choices?: { message?: { content?: string } }[];
+      [key: string]: any;
+    };
+    
+    const data = await res.json() as AIResponse;
+    const content = data?.choices?.[0]?.message?.content;
+
+    if (!content) {
+      return '[Error] No content generated';
+    }
+
+    return typeof content === 'string' ? content : JSON.stringify(content, null, 2);
+
+  } catch (e: any) {
+    return `[Error] ${e.message}`;
+  }
 }

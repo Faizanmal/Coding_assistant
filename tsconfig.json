@@ -19,6 +19,6 @@
 	"ts-node": {
 		"esm": true
 	},
-	"include": ["src","src/cli"],
+	"include": ["src","src/cli/index.ts"],
 	"exclude": ["node_modules",".vscode-test"]
 }

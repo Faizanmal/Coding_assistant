@@ -4,6 +4,13 @@ import { getprojectcontext } from './extension';
 import { createHighlighter, Highlighter } from 'shiki';
 import { generateCode,generateCodeTogether, generateCodeOpenRouter, 
     generateCodeMistral, generateCodeCerebras, tavilySearch } from './codegenerator';
+import { MultiFileGenerator } from './multifilegenerator';
+import { NLPFileGenerator } from './nlpfilegenerator';
+import { CodebaseAnalyzer } from './codebaseanalyzer';
+import { SmartEditor } from './smarteditor';
+import { ShellCommander } from './shellcommander';
+import { DirectoryAnalyzer } from './directoryanalyzer';
+import { SmartSearch } from './smartsearch';
 
 
 async function generateCodeUnified(provider: string, model: string, prompt: string): Promise<string> {
@@ -83,8 +90,31 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
 		}
 	}
 
-	// Add more CLI-style prompts here...
-	// if (/generate\s+test\s+for/i.test(prompt)) { ... }
+	// Multi-file generation (structured syntax)
+	const multiFileRequests = MultiFileGenerator.parseMultiFilePrompt(prompt);
+	if (multiFileRequests) {
+		try {
+			const useMultiAgent = /multi.?agent|agents|specialized|review|debug/i.test(prompt);
+			await MultiFileGenerator.generateMultipleFiles(multiFileRequests, useMultiAgent);
+			return `📄 Generated ${multiFileRequests.length} files${useMultiAgent ? ' with specialized agents' : ''}: ${multiFileRequests.map(r => r.fileName).join(', ')}`;
+		} catch (err: any) {
+			return `❌ Failed to generate files: ${err.message}`;
+		}
+	}
+
+	// NLP file generation
+	if (NLPFileGenerator.isNLPFileRequest(prompt)) {
+		const useMultiAgent = /multi.?agent|agents|specialized|review|debug|quality|secure/i.test(prompt);
+		if (useMultiAgent) {
+			const { NLPFileGenerator } = await import('./nlpfilegenerator');
+			const requests = await NLPFileGenerator.parseNaturalLanguage(prompt);
+			if (requests && requests.length > 0) {
+				await MultiFileGenerator.generateMultipleFiles(requests, true);
+				return `🤖 Generated ${requests.length} files with specialized agents`;
+			}
+		}
+		return await NLPFileGenerator.generateFromNLP(prompt);
+	}
 
 	return null; // Not a CLI-style command
 }
@@ -111,6 +141,115 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
 				}
 
 				let fullPrompt = prompt;
+
+				// Directory structure analysis
+				if (DirectoryAnalyzer.isDirectoryRequest(prompt)) {
+					try {
+						const structure = await DirectoryAnalyzer.getDirectoryStructure();
+						history.push({ role: 'assistant', content: structure });
+						this._saveChatHistory(history);
+						await this._updateWebview(history);
+						return;
+					} catch (err: any) {
+						history.push({ role: 'assistant', content: `❌ Directory analysis failed: ${err.message}` });
+						this._saveChatHistory(history);
+						await this._updateWebview(history);
+						return;
+					}
+				}
+
+				// Enhanced shell commands
+				if (ShellCommander.isShellRequest(prompt)) {
+					try {
+						const result = await ShellCommander.handleStatusRequest(prompt);
+						history.push({ role: 'assistant', content: result });
+						this._saveChatHistory(history);
+						await this._updateWebview(history);
+						return;
+					} catch (err: any) {
+						history.push({ role: 'assistant', content: `❌ Enhanced shell execution failed: ${err.message}` });
+						this._saveChatHistory(history);
+						await this._updateWebview(history);
+						return;
+					}
+				}
+
+				// Multi-file smart editing
+				if (SmartEditor.isMultiFileFeatureRequest(prompt)) {
+					try {
+						const { NLPFileGenerator } = await import('./nlpfilegenerator');
+						const requests = await NLPFileGenerator.parseNaturalLanguage(prompt);
+						if (requests && requests.length > 0) {
+							await SmartEditor.addFeatureToMultipleFiles(requests);
+							history.push({ role: 'assistant', content: `🤖 Enhanced ${requests.length} files with multi-agent smart edits` });
+						} else {
+							history.push({ role: 'assistant', content: '❌ Could not parse multi-file request' });
+						}
+						this._saveChatHistory(history);
+						await this._updateWebview(history);
+						return;
+					} catch (err: any) {
+						history.push({ role: 'assistant', content: `❌ Multi-file edit failed: ${err.message}` });
+						this._saveChatHistory(history);
+						await this._updateWebview(history);
+						return;
+					}
+				}
+
+				// Smart editing for current file
+				if (SmartEditor.isFeatureRequest(prompt)) {
+					try {
+						await SmartEditor.addFeatureToFile(prompt);
+						history.push({ role: 'assistant', content: '✅ Feature added to current file with diff preview' });
+						this._saveChatHistory(history);
+						await this._updateWebview(history);
+						return;
+					} catch (err: any) {
+						history.push({ role: 'assistant', content: `❌ Failed to add feature: ${err.message}` });
+						this._saveChatHistory(history);
+						await this._updateWebview(history);
+						return;
+					}
+				}
+
+				// Enhanced search
+				if (SmartSearch.isSearchRequest(prompt)) {
+					try {
+						const searchResults = await SmartSearch.handleSearchRequest(prompt);
+						history.push({ role: 'assistant', content: searchResults });
+						this._saveChatHistory(history);
+						await this._updateWebview(history);
+						return;
+					} catch (err: any) {
+						history.push({ role: 'assistant', content: `❌ Search failed: ${err.message}` });
+						this._saveChatHistory(history);
+						await this._updateWebview(history);
+						return;
+					}
+				}
+
+				// Codebase chat
+				if (/codebase|code|function|class|where|how|what.*does|explain.*code/i.test(prompt)) {
+					const workspacefolder = vscode.workspace.workspaceFolders;
+					if (!workspacefolder || workspacefolder.length === 0) {
+						const warn_erg = 'No workspace folder is currently open.';
+						history.push({ role: 'assistant', content: warn_erg });
+						await this._updateWebview(history);
+						return;
+					}
+					
+					if (/find|search|where.*is|locate/i.test(prompt)) {
+						const searchTerm = prompt.replace(/find|search|where.*is|locate/gi, '').trim();
+						const searchResults = await CodebaseAnalyzer.searchCodebase(searchTerm);
+						fullPrompt = `Search results:\n\n${searchResults}\n\nUser: ${prompt}`;
+					} else {
+						const response = await CodebaseAnalyzer.analyzeWithAI(prompt);
+						history.push({ role: 'assistant', content: response });
+						this._saveChatHistory(history);
+						await this._updateWebview(history);
+						return;
+					}
+				}
 
 				if (/file|current file|context|proj|project/i.test(prompt)) {
 					const workspacefolder = vscode.workspace.workspaceFolders;
@@ -215,6 +354,11 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
 				vscode.window.showTextDocument(doc, { preview: false });
 			});
 		}
+			
+			else if (message.command === 'refreshCodebase') {
+				CodebaseAnalyzer.clearCache();
+				vscode.window.showInformationMessage('Codebase refreshed!');
+			}
 		}
 	public async clearChatHistory() {
 	await this._context.globalState.update('AIChatHistory', []);
@@ -336,7 +480,7 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
 
 		<label for="provider-select">Agent:</label>
 			
-		<select id="provider-select" aria-label="select chat agent">
+		<select id="provider-select">
 		    <option value="groq">Groq</option>
 		    <option value="together">Together.ai</option>
 		    <option value="openrouter">OpenRouter</option>
@@ -346,15 +490,22 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
 
 		<label for="model-select">Model:</label>
 		<select id="model-select" aria-label="Select model"></select>
+		<button id="send-button">Send</button>
+		</div>
 
 		<label><input type="checkbox" id="use-web" />Use Web Search</label>
-
-		<select id="model-select"></select>
-
-		<button onclick="sendPrompt()">Send</button>
 		</div>
-		<button onclick="vscode.postMessage({ command: 'clearChatHistory' })">
+		<button id="clear-history-button">
 		Clear History
+		</button>
+		<button id="multi-file-help-button" style="margin-left: 10px;">
+		📄 Multi-File Help
+		</button>
+		<button id="refresh-codebase-button" style="margin-left: 10px;">
+		🔄 Refresh
+		</button>
+		<button id="shell-help-button" style="margin-left: 10px;">
+		💻 Shell Help
 		</button>	
 	</div>
 	<script>
@@ -369,9 +520,42 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
                 if (state?.selectedModel) {
                     setTimeout(() => {
                         document.getElementById('model-select').value = state.selectedModel;
-                    }, 100); // slight delay to ensure model options are populated
-                }}
+                    }, 100);
+                }
+            }
+
+			document.getElementById('send-button').addEventListener('click', sendPrompt);
+			document.getElementById('clear-history-button').addEventListener('click', () => {
+				vscode.postMessage({ command: 'clearChatHistory' });
+			});
+			document.getElementById('multi-file-help-button').addEventListener('click', showMultiFileHelp);
+			document.getElementById('refresh-codebase-button').addEventListener('click', () => {
+				vscode.postMessage({ command: 'refreshCodebase' });
+			});
+			document.getElementById('shell-help-button').addEventListener('click', showShellHelp);
+
+
+            // Copy button functionality
+            document.querySelectorAll('pre > code').forEach((codeBlock) => {
+                const button = document.createElement('button');
+                button.innerText = 'Copy';
+                button.className = 'copy-btn';
+                button.addEventListener('click', () => {
+                    navigator.clipboard.writeText(codeBlock.innerText);
+                    button.innerText = 'Copied!';
+                    setTimeout(() => button.innerText = 'Copy', 1000);
+                });
+                codeBlock.parentNode.insertBefore(button, codeBlock);
             });
+
+            // Delete button functionality
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = e.target.getAttribute('data-index');
+                    vscode.postMessage({ command: 'deleteMessage', index: parseInt(index) });
+                });
+            });
+        });
 
         const providerModelMap = {
 	        groq: {
@@ -403,14 +587,14 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
                 "qwen-3-235b-a22b": "QWEN‑3 235B",
                 "deepseek-r1-distill-llama-70b": "DeepSeek R1 (preview)"
                 }
-
             };
+
 
         document.getElementById('provider-select').addEventListener('change', function () {
                 const provider = this.value;
                 const modelSelect = document.getElementById('model-select');
 
-                modelSelect.innerHTML = ''; // Clear existing options
+                modelSelect.innerHTML = '';
 
                 const models = providerModelMap[provider];
                 for (const modelValue in models) {
@@ -436,7 +620,6 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
 			});
 		});
 
-
 		function sendPrompt() {
 			const textArea = document.getElementById('prompt');
             const providerSelect = document.getElementById('provider-select');
@@ -448,16 +631,12 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
             const model = modelSelect.value;
             const useWeb = useWebCheckbox.checked;
 
-            // console.log("Sending prompt with web search:", useWeb);
-
 			if (text.trim()) {
                 vscode.setState({ selectedProvider: provider, selectedModel: model });
-				vscode.postMessage({ command: 'sendPrompt', text, provider,model, useWeb });
+				vscode.postMessage({ command: 'sendPrompt', text, provider, model, useWeb });
 				textArea.value = '';
 			}
 		}
-
-
 
 		window.addEventListener('message', event => {
         const message = event.data;
@@ -470,7 +649,7 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
 
     function showContext(markdown) {
         const container = document.getElementById('context');
-        container.innerHTML = ''; // Clear previous context
+        container.innerHTML = '';
 
         const pre = document.createElement('pre');
         const code = document.createElement('code');
@@ -479,7 +658,7 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
         container.appendChild(pre);
     }
 
-		document.getElementById('prompt').addEventListener('keydown', (e) => {
+			document.getElementById('prompt').addEventListener('keydown', (e) => {
 			if (e.key === 'Enter' && !e.shiftKey) {
 				e.preventDefault();
 				sendPrompt();
@@ -495,13 +674,26 @@ export class ChatSidebarViewProvider implements vscode.WebviewViewProvider {
   			});
 		});
 
-		function scrollToBottom() {
+		function showMultiFileHelp() {
+			const helpText = 'Multi-File Generation Help:\n\nNatural Language:\n• "Create a React app with components and styles"\n• "Build an Express server with routes and middleware"\n• "Generate Python project with main file and utils"\n• "Make a simple HTML website with CSS and JS"\n\nStructured Syntax:\ngenerate files: filename1:prompt1, filename2:prompt2\n\nExamples:\n• generate files: app.js:express server, routes.js:user routes';
+			alert(helpText);
+		}
+
+		function showShellHelp() {
+			const helpText = 'Enhanced Shell Processing:\n\nSmart Execution:\n• "install and build with priority" - Priority-based execution\n• "start services in parallel" - Intelligent parallel processing\n\nAdvanced Features:\n• Terminal management & reuse\n• Command priority queuing\n• Real-time status monitoring\n• Automatic dependency detection\n\nMonitoring:\n• "show terminal status" - View active processes\n• "terminal status" - Command queue info\n\nKeywords: parallel, priority, status, simultaneously';
+			alert(helpText);
+		}
+
+
+
+		function scrollToBottom() {	
 			const chat = document.getElementById('chat');
 			if (chat) {
-			chat.scrollTop = chat.scrollHeight;
-			}}
-			window.addEventListener('load', scrollToBottom);
-			window.addEventListener('message', scrollToBottom);
+			    chat.scrollTop = chat.scrollHeight;
+			}
+        }
+		window.addEventListener('load', scrollToBottom);
+		window.addEventListener('message', scrollToBottom);
 
 	</script>
 </body>

@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "outDir": "dist/cli",
-    "rootDir": "src/cli",
+    "rootDir": "./src/cli",
+    "outDir": "./dist/cli",
     "target": "es2022",
     "module": "commonjs",
     "esModuleInterop": true,
     "strict": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "declaration": false
   },
-   "include": ["src/cli/**/*.ts"]
+   "include": ["src/cli/**/*"],
+   "exclude": ["node_modules"]
 }

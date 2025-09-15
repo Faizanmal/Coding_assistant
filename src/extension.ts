@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import fetch from 'node-fetch';
 import * as fs from 'fs';
 import { ChatPanel } from './chatpanel';
-import { ChatSidebarViewProvider } from './sidebar';
+import { SimpleSidebarViewProvider } from './sidebar_simple';
 import { getFixFromLLM, callAI } from './codegenerator';
 import { registerFixSelectedErrorCommand } from './fixselectederror';
 import { ineditorcodegenerationCommand } from './ineditorcodegenerate';
@@ -14,6 +14,30 @@ import { fixselectedcodeCommand, explainselectedcodeCommand } from './fixselecte
 import { inlinesuggestionCommand } from './inlinesuggestion';
 import { registerLLMFixCommand, registerFixSelectedErrorCommands } from './hoverfixdiagnostic';
 import { codereviewcommand, suggestreviewcodecommand } from './codereview';
+import * as autoCodeReview from './autocodereview';
+import * as semanticSearch from './semanticsearch';
+import * as playground from './playground';
+import { activateTimeTravelDebugger } from './timetraveldebug';
+import * as smartTestGen from './smarttestgen';
+import { MultiFileGenerator } from './multifilegenerator';
+import { NLPFileGenerator } from './nlpfilegenerator';
+import { SmartEditor } from './smarteditor';
+import { ShellCommander } from './shellcommander';
+import { DirectoryAnalyzer } from './directoryanalyzer';
+import { SmartSearch } from './smartsearch';
+import { RealtimeAnalyzer } from './realtimeanalyzer';
+import { AdvancedRefactorAssistant } from './advancedrefactor';
+import { SmartDocGenerator } from './docgenerator';
+import { PerformanceProfiler } from './performanceprofiler';
+import { SmartGitIntegration } from './smartgit';
+import { AdvancedCompletionProvider } from './advancedcompletion';
+import { CodeAssistant } from './codeassistant';
+import { QuickFixes } from './quickfixes';
+import { CodeNavigator } from './codenavigator';
+import { SnippetGenerator } from './snippetgenerator';
+import { DebugHelper } from './debughelper';
+import { InstantReviewer } from './instantreviewer';
+
 
 export async function getprojectcontext(): Promise<string> {
 	try {
@@ -43,7 +67,7 @@ export async function getprojectcontext(): Promise<string> {
 						const content = fs.readFileSync(filepath, 'utf-8');
 						context += `\n--- ${fileName} ---\n${content.slice(0, 1000)}`;
 					} else {
-						context += `\n--- ${fileName} ---\n[Directory or non-regular file]`;
+						context += `\n--- ${fileName} ---\n[Directory or non-regular file]`
 					}
 				}
 			} catch (fileErr) {
@@ -123,9 +147,11 @@ export async function getLLMFixForCode(code: string): Promise<string> {
   const prompt = `
 This code has an error. Fix it and return only the corrected code (no explanations).
 
-\`\`\`
-${code}
-\`\`\`
+\
+\
+${code}\
+\
+
 `;
 
   const response = await getFixFromLLM(prompt); 
@@ -188,39 +214,46 @@ export async function fixFirstDiagnosticError() {
     vscode.window.showInformationMessage('No errors found in this file.');
     return;
   }
-  
+
   const range = errorDiagnostic.range;
-  const errorCode = document.getText(range);
+  const startLine = Math.max(0, range.start.line - 3);
+  const endLine = Math.min(document.lineCount - 1, range.end.line + 3);
+  const contextRange = new vscode.Range(startLine, 0, endLine, document.lineAt(endLine).text.length);
+  const codeWithContext = document.getText(contextRange);
   const errorMessage = errorDiagnostic.message;
 
   const prompt = `
 You're a code assistant.
 
-A developer is fixing a small error in this python code:
+A developer is fixing a small error in this code:
 
 --- Error Message ---
 ${errorMessage}
 
---- Code to Fix ---
-\`\`\`
-${errorCode}
-\`\`\`
+--- Code with Context ---
+\
+\
+${codeWithContext}\
+\
 
-Fix only this code and return only the corrected version, without wrapping it in any extra functions, classes, or explanations. Do not return anything else, just the fixed code block.
+
+The error is on the line: "${document.getText(range)}"
+
+Fix only the line with the error and return only the corrected version of that line, without wrapping it in any extra functions, classes, or explanations. Do not return anything else, just the fixed code for that line.
 `;
 
   vscode.window.withProgress(
     { location: vscode.ProgressLocation.Notification, title: "Fixing error with LLM..." },
     async () => {
       try {
-      		const fixedCode = sanitizeLLMOutput(await getLLMFixForCode(prompt));
+        const fixedCode = sanitizeLLMOutput(await getFixFromLLM(prompt));
 
         if (!fixedCode) {
           vscode.window.showWarningMessage('LLM did not return a valid fix.');
           return;
         }
 
-		await showDiffAndApply(errorCode, fixedCode, range);
+        await showDiffAndApply(document.getText(range), fixedCode, range);
       } catch (err) {
         console.error(err);
         vscode.window.showErrorMessage('LLM failed to fix the code.');
@@ -228,6 +261,7 @@ Fix only this code and return only the corrected version, without wrapping it in
     }
   );
 }
+
 
 export class LLMCodeFixProvider implements vscode.CodeActionProvider {
   public static readonly providedCodeActionKinds = [vscode.CodeActionKind.QuickFix];
@@ -262,9 +296,22 @@ export async function activate(context: vscode.ExtensionContext) {
 	await initHighlighter();
 	
  	const globalProjectContext = await getprojectcontext();
-	const provider = new ChatSidebarViewProvider(context,highlighter, globalProjectContext);
+	const provider = new SimpleSidebarViewProvider();
 	context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider(ChatSidebarViewProvider.viewType, provider));
+		vscode.window.registerWebviewViewProvider(SimpleSidebarViewProvider.viewType, provider));
+
+	// Initialize advanced features
+	const realtimeAnalyzer = new RealtimeAnalyzer();
+	realtimeAnalyzer.activate(context);
+
+	// Register advanced completion provider
+	const completionProvider = new AdvancedCompletionProvider();
+	context.subscriptions.push(
+		vscode.languages.registerInlineCompletionItemProvider(
+			{ scheme: 'file' },
+			completionProvider
+		)
+	);
 
 	context.subscriptions.push(
     vscode.commands.registerCommand('coding.openChat', () => {
@@ -293,35 +340,330 @@ export async function activate(context: vscode.ExtensionContext) {
 
   suggestreviewcodecommand(context);
 
+  autoCodeReview.activate(context);
+  semanticSearch.activate(context);
+  playground.activate(context);
+  activateTimeTravelDebugger(context);
+  smartTestGen.activate(context);
+
+  // Multi-file generation command
+  const multiFileGenerate = vscode.commands.registerCommand('coding.generateMultipleFiles', async () => {
+    const options = await vscode.window.showQuickPick([
+      { label: 'Natural Language', description: 'Describe files in plain English' },
+      { label: 'Structured Syntax', description: 'Use filename:prompt format' },
+      { label: 'Multi-Agent Mode', description: 'Use specialized AI agents' }
+    ], { placeHolder: 'Choose generation method' });
+    
+    if (!options) {return;}
+    
+    const useMultiAgent = options.label === 'Multi-Agent Mode';
+    
+    if (options.label === 'Natural Language' || useMultiAgent) {
+      const input = await vscode.window.showInputBox({
+        prompt: useMultiAgent ? 'Describe files (will use specialized agents)' : 'Describe what files you want to create',
+        placeHolder: 'Create a full-stack app with React frontend and Express backend'
+      });
+      
+      if (input) {
+        const result = await NLPFileGenerator.generateFromNLP(input);
+        vscode.window.showInformationMessage(result);
+      }
+    } else {
+      const input = await vscode.window.showInputBox({
+        prompt: 'Enter file generation requests',
+        placeHolder: 'app.js:express server, component.tsx:react component'
+      });
+      
+      if (input) {
+        const requests = MultiFileGenerator.parseMultiFilePrompt(`generate files: ${input}`);
+        if (requests) {
+          await MultiFileGenerator.generateMultipleFiles(requests, useMultiAgent);
+        } else {
+          vscode.window.showErrorMessage('Invalid format');
+        }
+      }
+    }
+  });
+  
+  context.subscriptions.push(multiFileGenerate);
+
+  // Smart editing command
+  const addFeature = vscode.commands.registerCommand('coding.addFeature', async () => {
+    const input = await vscode.window.showInputBox({
+      prompt: 'Describe the feature to add to current file',
+      placeHolder: 'Add error handling to the login function'
+    });
+    
+    if (input) {
+      await SmartEditor.addFeatureToFile(input);
+    }
+  });
+  
+  // Multi-file smart editing command
+  const addFeatureMultiFile = vscode.commands.registerCommand('coding.addFeatureMultiFile', async () => {
+    const input = await vscode.window.showInputBox({
+      prompt: 'Describe features to add to multiple files',
+      placeHolder: 'Add logging to all API files and error handling to auth files'
+    });
+    
+    if (input) {
+      const { NLPFileGenerator } = await import('./nlpfilegenerator');
+      const requests = await NLPFileGenerator.parseNaturalLanguage(input);
+      if (requests && requests.length > 0) {
+        await SmartEditor.addFeatureToMultipleFiles(requests);
+      } else {
+        vscode.window.showErrorMessage('Could not parse multi-file request');
+      }
+    }
+  });
+  
+  context.subscriptions.push(addFeature, addFeatureMultiFile);
+
+  // Shell command execution
+  const executeShellCommand = vscode.commands.registerCommand('coding.executeShellCommand', async () => {
+    const input = await vscode.window.showInputBox({
+      prompt: 'Describe the shell command in natural language',
+      placeHolder: 'install npm packages, run the server, check git status'
+    });
+    
+    if (input) {
+      try {
+        const result = await ShellCommander.executeNLPCommand(input);
+        vscode.window.showInformationMessage(result);
+      } catch (error: any) {
+        vscode.window.showErrorMessage(`Shell command failed: ${error.message}`);
+      }
+    }
+  });
+  
+  context.subscriptions.push(executeShellCommand);
+
+  // Directory structure analysis
+  const analyzeDirectory = vscode.commands.registerCommand('coding.analyzeDirectory', async () => {
+    const structure = await DirectoryAnalyzer.getDirectoryStructure();
+    
+    const doc = await vscode.workspace.openTextDocument({
+      content: structure,
+      language: 'markdown'
+    });
+    
+    await vscode.window.showTextDocument(doc);
+  });
+  
+  context.subscriptions.push(analyzeDirectory);
+
+  // Smart search command
+  const smartSearch = vscode.commands.registerCommand('coding.smartSearch', async () => {
+    const searchType = await vscode.window.showQuickPick(
+      ['Search Everything', 'Search Filenames Only', 'Search Content Only', 'Search Folders'],
+      { placeHolder: 'Choose search type' }
+    );
+    
+    if (!searchType) {return;}
+    
+    const query = await vscode.window.showInputBox({
+      prompt: 'Enter search query',
+      placeHolder: 'function name, file name, or content to search'
+    });
+    
+    if (query) {
+      let results: string;
+      
+      switch (searchType) {
+        case 'Search Filenames Only':
+          results = await SmartSearch.searchFiles(query, 'filename');
+          break;
+        case 'Search Content Only':
+          results = await SmartSearch.searchFiles(query, 'content');
+          break;
+        case 'Search Folders':
+          results = await SmartSearch.searchFolders(query);
+          break;
+        default:
+          results = await SmartSearch.searchFiles(query, 'both');
+      }
+      
+      const doc = await vscode.workspace.openTextDocument({
+        content: results,
+        language: 'markdown'
+      });
+      
+      await vscode.window.showTextDocument(doc);
+    }
+  });
+  
+  context.subscriptions.push(smartSearch);
+
+  // NLP File Generation command
+  const nlpFileGeneration = vscode.commands.registerCommand('coding.nlpFileGeneration', async () => {
+    const input = await vscode.window.showInputBox({
+      prompt: 'Describe files to generate in natural language',
+      placeHolder: 'Create a React todo app with components and API'
+    });
+    
+    if (input) {
+      const result = await NLPFileGenerator.generateFromNLP(input);
+      vscode.window.showInformationMessage(result);
+    }
+  });
+
+  // Multi-Agent Generation command
+  const multiAgentGeneration = vscode.commands.registerCommand('coding.multiAgentGeneration', async () => {
+    const input = await vscode.window.showInputBox({
+      prompt: 'Describe project to generate with specialized agents',
+      placeHolder: 'Build a full-stack e-commerce app with security features'
+    });
+    
+    if (input) {
+      const requests = await NLPFileGenerator.parseNaturalLanguage(input);
+      if (requests && requests.length > 0) {
+        await MultiFileGenerator.generateMultipleFiles(requests, true);
+        vscode.window.showInformationMessage(`Generated ${requests.length} files with multi-agent system`);
+      } else {
+        vscode.window.showErrorMessage('Could not parse generation request');
+      }
+    }
+  });
+
+  context.subscriptions.push(nlpFileGeneration, multiAgentGeneration);
+
+  // Advanced Refactoring Commands
+  const refactorSelection = vscode.commands.registerCommand('coding.refactorSelection', () => {
+    AdvancedRefactorAssistant.refactorSelection();
+  });
+  
+  const suggestRefactorings = vscode.commands.registerCommand('coding.suggestRefactorings', () => {
+    AdvancedRefactorAssistant.suggestRefactorings();
+  });
+
+  // Documentation Generation Commands
+  const generateDocs = vscode.commands.registerCommand('coding.generateDocumentation', () => {
+    SmartDocGenerator.generateDocumentation();
+  });
+  
+  const generateReadme = vscode.commands.registerCommand('coding.generateReadme', () => {
+    SmartDocGenerator.generateReadme();
+  });
+  
+  const generateApiDocs = vscode.commands.registerCommand('coding.generateApiDocs', () => {
+    SmartDocGenerator.generateApiDocs();
+  });
+
+  // Performance Analysis Commands
+  const analyzePerformance = vscode.commands.registerCommand('coding.analyzePerformance', () => {
+    PerformanceProfiler.analyzePerformance();
+  });
+  
+  const generateBenchmark = vscode.commands.registerCommand('coding.generateBenchmark', () => {
+    PerformanceProfiler.generateBenchmark();
+  });
+
+  // Smart Git Integration Commands
+  const generateCommitMessage = vscode.commands.registerCommand('coding.generateCommitMessage', () => {
+    SmartGitIntegration.generateCommitMessage();
+  });
+  
+  const analyzeCodeChanges = vscode.commands.registerCommand('coding.analyzeCodeChanges', () => {
+    SmartGitIntegration.analyzeCodeChanges();
+  });
+  
+  const suggestBranchName = vscode.commands.registerCommand('coding.suggestBranchName', () => {
+    SmartGitIntegration.suggestBranchName();
+  });
+  
+  const generatePRDescription = vscode.commands.registerCommand('coding.generatePRDescription', () => {
+    SmartGitIntegration.generatePullRequestDescription();
+  });
+
+  context.subscriptions.push(
+    refactorSelection, suggestRefactorings,
+    generateDocs, generateReadme, generateApiDocs,
+    analyzePerformance, generateBenchmark,
+    generateCommitMessage, analyzeCodeChanges, suggestBranchName, generatePRDescription
+  );
+
+  // Code Assistant Commands
+  const explainCode = vscode.commands.registerCommand('coding.explainCode', () => {
+    CodeAssistant.explainCode();
+  });
+  
+  const generateTestsCmd = vscode.commands.registerCommand('coding.generateTestsCmd', () => {
+    CodeAssistant.generateTests();
+  });
+  
+  const optimizeCode = vscode.commands.registerCommand('coding.optimizeCode', () => {
+    CodeAssistant.optimizeCode();
+  });
+
+  // Quick Fixes Commands
+  const addLogging = vscode.commands.registerCommand('coding.addLogging', () => {
+    QuickFixes.addLogging();
+  });
+  
+  const addErrorHandling = vscode.commands.registerCommand('coding.addErrorHandling', () => {
+    QuickFixes.addErrorHandling();
+  });
+  
+  const convertToAsync = vscode.commands.registerCommand('coding.convertToAsync', () => {
+    QuickFixes.convertToAsync();
+  });
+
+  // Code Navigation Commands
+  const findSimilarCode = vscode.commands.registerCommand('coding.findSimilarCode', () => {
+    CodeNavigator.findSimilarCode();
+  });
+  
+  const generateCodeMap = vscode.commands.registerCommand('coding.generateCodeMap', () => {
+    CodeNavigator.generateCodeMap();
+  });
+
+  // Snippet Generator Commands
+  const generateSnippet = vscode.commands.registerCommand('coding.generateSnippet', () => {
+    SnippetGenerator.generateFromDescription();
+  });
+  
+  const createBoilerplate = vscode.commands.registerCommand('coding.createBoilerplate', () => {
+    SnippetGenerator.createBoilerplate();
+  });
+  
+  const generateRegex = vscode.commands.registerCommand('coding.generateRegex', () => {
+    SnippetGenerator.generateRegex();
+  });
+
+  // Debug Helper Commands
+  const analyzeError = vscode.commands.registerCommand('coding.analyzeError', () => {
+    DebugHelper.analyzeError();
+  });
+  
+  const addDebugLogs = vscode.commands.registerCommand('coding.addDebugLogs', () => {
+    DebugHelper.addDebugLogs();
+  });
+  
+  const generateBreakpoints = vscode.commands.registerCommand('coding.generateBreakpoints', () => {
+    DebugHelper.generateBreakpoints();
+  });
+
+  // Instant Reviewer Commands
+  const reviewCurrentFile = vscode.commands.registerCommand('coding.reviewCurrentFile', () => {
+    InstantReviewer.reviewCurrentFile();
+  });
+  
+  const quickScan = vscode.commands.registerCommand('coding.quickScan', () => {
+    InstantReviewer.quickScan();
+  });
+
+  context.subscriptions.push(
+    explainCode, generateTestsCmd, optimizeCode,
+    addLogging, addErrorHandling, convertToAsync,
+    findSimilarCode, generateCodeMap,
+    generateSnippet, createBoilerplate, generateRegex,
+    analyzeError, addDebugLogs, generateBreakpoints,
+    reviewCurrentFile, quickScan
+  );
+
 	context.subscriptions.push(
   vscode.commands.registerCommand("coding.fixFirstError", fixFirstDiagnosticError)
 );
-
-// 	vscode.languages.registerCodeActionsProvider(
-//   { scheme: 'file', language: 'python' },
-//   new LLMCodeFixProvider(),
-//   { providedCodeActionKinds: LLMCodeFixProvider.providedCodeActionKinds }
-// );
-
-  // context.subscriptions.push(
-  //   vscode.languages.registerHoverProvider({ scheme: 'file', language: '*' }, {
-  //     provideHover(document, position, token) {
-  //       const diagnostics = vscode.languages.getDiagnostics(document.uri);
-  //       const related = diagnostics.filter(d => d.range.contains(position));
-  //       if (!related.length) {return;}
-
-  //       const markdown = new vscode.MarkdownString(`[🛠 Fix this with LLM](command:coding.fixError)`);
-  //       markdown.isTrusted = true; // Allows the command link to be clickable
-
-  //       return new vscode.Hover(markdown);
-  //     }
-  //   })
-  // );
-
-    // context.subscriptions.push(
-    //     vscode.commands.registerCommand('coding.askAI', async () => {
-    //         await vscode.window.showInformationMessage('Ask command executed!');
-    //     }));
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand("coding.clearChatHistory", async () => {
@@ -332,7 +674,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			);
 
 			if (confirm === "Yes") {
-			await provider.clearChatHistory();
+			// await provider.clearChatHistory();
 			await vscode.commands.executeCommand("workbench.action.closePanel");
 			await context.globalState.update('AIChatHistory', []);
 			vscode.window.showInformationMessage('Chat history cleared!');
@@ -340,7 +682,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 
 	vscode.languages.registerInlineCompletionItemProvider(
-		{ scheme: 'file', language: 'python'}, {	
+		{ scheme: 'file', language: 'python'},
+		{
 		async provideInlineCompletionItems(document, position, context, token) {
       const line = document.lineAt(position);
 			const linePrefix = document.lineAt(position).text.slice(0, position.character);

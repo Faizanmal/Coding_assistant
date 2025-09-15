@@ -21,8 +21,15 @@ import { reviewCode } from './review';
 import { loadCodeFiles, chunkCode, embedTexts, cosineSimilarity, findTopMatches } from './projectawareness';
 
 
-dotenv.config();
+const envPath = path.resolve(__dirname, '..', '..', 'backend-server', '.env');
+dotenv.config({ path: envPath });
+
 const api = process.env.API_KEY;
+if (!api) {
+  console.error(chalk.red('Error: API_KEY is not set. Please check your .env file.'));
+  process.exit(1);
+}
+
 const tog_api = process.env.Hug_face;
 
 export async function callAI(this: any, prompt: string): Promise<string> {
@@ -81,7 +88,7 @@ export async function getFixFromLLM(prompt: string): Promise<string> {
   });
 
   const data = await res.json() as { choices?: { message?: { content?: string } }[] };
-  console.log(data);
+  
   return data.choices?.[0]?.message?.content || 'No fix generated';
 }
 

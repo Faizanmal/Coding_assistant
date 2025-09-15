@@ -30,6 +30,57 @@
           "command": "coding.fixSelectedError",
           "when": "editorHasSelection",
           "group": "navigation"
+        },
+        {
+          "command": "coding.generateTests",
+          "group": "testing"
+        },
+        {
+          "command": "coding.refactorSelection",
+          "when": "editorHasSelection",
+          "group": "refactoring"
+        },
+        {
+          "command": "coding.generateDocumentation",
+          "when": "editorHasSelection",
+          "group": "documentation"
+        },
+        {
+          "command": "coding.analyzePerformance",
+          "group": "analysis"
+        },
+        {
+          "command": "coding.explainCode",
+          "when": "editorHasSelection",
+          "group": "assistant"
+        },
+        {
+          "command": "coding.optimizeCode",
+          "when": "editorHasSelection",
+          "group": "assistant"
+        },
+        {
+          "command": "coding.addLogging",
+          "when": "editorHasSelection",
+          "group": "quickfix"
+        },
+        {
+          "command": "coding.addErrorHandling",
+          "when": "editorHasSelection",
+          "group": "quickfix"
+        },
+        {
+          "command": "coding.analyzeError",
+          "group": "debug"
+        },
+        {
+          "command": "coding.reviewCurrentFile",
+          "group": "review"
+        },
+        {
+          "command": "coding.quickScan",
+          "when": "editorHasSelection",
+          "group": "review"
         }
       ]
     },
@@ -127,6 +178,216 @@
         "command": "coding.suggestCodeImprovements",
         "title": "Code suggest",
         "category": "Explain code"
+      },
+      {
+        "command": "extension.autoCodeReview",
+        "title": "Auto Code Review",
+        "category": "Code Review"
+      },
+      {
+        "command": "coding.semanticSearch",
+        "title": "Semantic Code Search",
+        "category": "Search"
+      },
+      {
+        "command": "coding.openPlayground",
+        "title": "Open in Code Playground",
+        "category": "Playground"
+      },
+      {
+        "command": "coding.getPlaygroundSuggestions",
+        "title": "Get Playground Suggestions",
+        "category": "Playground"
+      },
+      {
+        "command": "coding.generateDebugSummary",
+        "title": "Generate Time-Travel Debug Summary",
+        "category": "Debugging"
+      },
+      {
+        "command": "coding.generateTests",
+        "title": "Generate Smart Tests",
+        "category": "Testing"
+      },
+      {
+        "command": "coding.analyzeCoverage",
+        "title": "Analyze Test Coverage",
+        "category": "Testing"
+      },
+      {
+        "command": "coding.generateMultipleFiles",
+        "title": "Generate Multiple Files",
+        "category": "File Generation"
+      },
+      {
+        "command": "coding.addFeature",
+        "title": "Add Feature to Current File",
+        "category": "Smart Editing"
+      },
+      {
+        "command": "coding.addFeatureMultiFile",
+        "title": "Add Feature to Multiple Files",
+        "category": "Smart Editing"
+      },
+      {
+        "command": "coding.executeShellCommand",
+        "title": "Execute Shell Command (NLP)",
+        "category": "Terminal"
+      },
+      {
+        "command": "coding.analyzeDirectory",
+        "title": "Analyze Directory Structure",
+        "category": "Analysis"
+      },
+      {
+        "command": "coding.smartSearch",
+        "title": "Smart Search Files & Folders",
+        "category": "Search"
+      },
+      {
+        "command": "coding.nlpFileGeneration",
+        "title": "NLP File Generation",
+        "category": "File Generation"
+      },
+      {
+        "command": "coding.multiAgentGeneration",
+        "title": "Multi-Agent File Generation",
+        "category": "File Generation"
+      },
+      {
+        "command": "coding.refactorSelection",
+        "title": "Advanced Refactor Selection",
+        "category": "Refactoring"
+      },
+      {
+        "command": "coding.suggestRefactorings",
+        "title": "Suggest Refactoring Opportunities",
+        "category": "Refactoring"
+      },
+      {
+        "command": "coding.generateDocumentation",
+        "title": "Generate Smart Documentation",
+        "category": "Documentation"
+      },
+      {
+        "command": "coding.generateReadme",
+        "title": "Generate Project README",
+        "category": "Documentation"
+      },
+      {
+        "command": "coding.generateApiDocs",
+        "title": "Generate API Documentation",
+        "category": "Documentation"
+      },
+      {
+        "command": "coding.analyzePerformance",
+        "title": "Analyze Code Performance",
+        "category": "Performance"
+      },
+      {
+        "command": "coding.generateBenchmark",
+        "title": "Generate Performance Benchmark",
+        "category": "Performance"
+      },
+      {
+        "command": "coding.generateCommitMessage",
+        "title": "Generate Smart Commit Message",
+        "category": "Git Integration"
+      },
+      {
+        "command": "coding.analyzeCodeChanges",
+        "title": "Analyze Git Changes",
+        "category": "Git Integration"
+      },
+      {
+        "command": "coding.suggestBranchName",
+        "title": "Suggest Branch Name",
+        "category": "Git Integration"
+      },
+      {
+        "command": "coding.generatePRDescription",
+        "title": "Generate Pull Request Description",
+        "category": "Git Integration"
+      },
+      {
+        "command": "coding.explainCode",
+        "title": "Explain Selected Code",
+        "category": "Code Assistant"
+      },
+      {
+        "command": "coding.generateTestsCmd",
+        "title": "Generate Unit Tests",
+        "category": "Code Assistant"
+      },
+      {
+        "command": "coding.optimizeCode",
+        "title": "Optimize Selected Code",
+        "category": "Code Assistant"
+      },
+      {
+        "command": "coding.addLogging",
+        "title": "Add Logging Statements",
+        "category": "Quick Fixes"
+      },
+      {
+        "command": "coding.addErrorHandling",
+        "title": "Add Error Handling",
+        "category": "Quick Fixes"
+      },
+      {
+        "command": "coding.convertToAsync",
+        "title": "Convert to Async/Await",
+        "category": "Quick Fixes"
+      },
+      {
+        "command": "coding.findSimilarCode",
+        "title": "Find Similar Code Patterns",
+        "category": "Code Navigation"
+      },
+      {
+        "command": "coding.generateCodeMap",
+        "title": "Generate Code Map",
+        "category": "Code Navigation"
+      },
+      {
+        "command": "coding.generateSnippet",
+        "title": "Generate Code Snippet",
+        "category": "Snippet Generator"
+      },
+      {
+        "command": "coding.createBoilerplate",
+        "title": "Create Boilerplate Code",
+        "category": "Snippet Generator"
+      },
+      {
+        "command": "coding.generateRegex",
+        "title": "Generate Regex Pattern",
+        "category": "Snippet Generator"
+      },
+      {
+        "command": "coding.analyzeError",
+        "title": "Analyze Current Error",
+        "category": "Debug Helper"
+      },
+      {
+        "command": "coding.addDebugLogs",
+        "title": "Add Debug Logging",
+        "category": "Debug Helper"
+      },
+      {
+        "command": "coding.generateBreakpoints",
+        "title": "Suggest Breakpoints",
+        "category": "Debug Helper"
+      },
+      {
+        "command": "coding.reviewCurrentFile",
+        "title": "Review Current File",
+        "category": "Instant Reviewer"
+      },
+      {
+        "command": "coding.quickScan",
+        "title": "Quick Code Scan",
+        "category": "Instant Reviewer"
       }
     ]
   },
@@ -136,12 +397,12 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "build:cli": "tsc --project tsconfig.cli.json",
+    "build:cli": "tsc -p tsconfig.cli.json",
     "watch": "tsc --watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test",
-    "cli": "ts-node --esm cli/index.ts"
+    "cli": "npm run build:cli && node dist/cli/index.js"
   },
   "devDependencies": {
     "@types/commander": "^2.12.0",

@@ -2,7 +2,6 @@ import readline from 'readline';
 import chalk from 'chalk';
 import ora from 'ora';
 import { getFixFromLLM } from '.'; 
-import { trim } from 'lodash';
 
 export async function startChat() {
   console.log(chalk.green('\n💬 Welcome to LLM Chat! (type "exit" to quit)\n'));
@@ -10,7 +9,7 @@ export async function startChat() {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: chalk.cyan('> ')
+    prompt: chalk.cyan('User: ')
   });
 
   const history: { role: 'user' | 'assistant'; content: string }[] = [];
@@ -32,8 +31,11 @@ export async function startChat() {
       ).join('\n') + '\nAssistant:';
       const response = await getFixFromLLM(contextPrompt);
       spinner.stop();
-      const trimmed = response.trim();
-      console.log(chalk.yellowBright('\nLLM:\n') + trimmed + '\n');
+      
+      const usageIndex = response.indexOf('usage:');
+      const cleanResponse = usageIndex === -1 ? response : response.substring(0, usageIndex);
+      const trimmedResponse = cleanResponse.trim();
+      console.log(chalk.yellowBright('\nLLM:\n') + trimmedResponse + '\n');
     } catch (err) {
       spinner.fail('Error during chat');
       console.error(err);

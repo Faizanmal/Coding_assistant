@@ -1,5 +1,7 @@
 .llm/
 .vscode/
+.vscode-test/
+.vscode-test.mjs/
 /backend-server/node_modules/
 /backend-server/.env
 /backend-server/package-lock.json
