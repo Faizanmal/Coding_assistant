@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
+    "setup-security": "node scripts/install-security.js",
+    "dev": "NODE_ENV=development node server.js",
+    "prod": "NODE_ENV=production node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,6 +19,9 @@
     "cors": "^2.8.5",
     "dotenv": "^17.1.0",
     "express": "^5.1.0",
-    "node-fetch": "^3.3.2"
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^8.0.0",
+    "node-fetch": "^3.3.2",
+    "validator": "^13.11.0"
   }
 }

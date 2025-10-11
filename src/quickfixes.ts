@@ -5,7 +5,7 @@ export class QuickFixes {
     
     public static async addLogging() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const selection = editor.selection;
         const code = editor.document.getText(selection);
@@ -23,7 +23,7 @@ ${code}`;
 
     public static async addErrorHandling() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const selection = editor.selection;
         const code = editor.document.getText(selection);
@@ -41,7 +41,7 @@ ${code}`;
 
     public static async convertToAsync() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const selection = editor.selection;
         const code = editor.document.getText(selection);

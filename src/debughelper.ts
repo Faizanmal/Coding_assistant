@@ -5,7 +5,7 @@ export class DebugHelper {
     
     public static async analyzeError() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const diagnostics = vscode.languages.getDiagnostics(editor.document.uri);
         if (diagnostics.length === 0) {
@@ -50,7 +50,7 @@ ${context}`;
 
     public static async addDebugLogs() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const selection = editor.selection;
         const code = editor.document.getText(selection);
@@ -68,7 +68,7 @@ ${code}`;
 
     public static async generateBreakpoints() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const code = editor.document.getText();
         const prompt = `Suggest optimal breakpoint locations for debugging this ${editor.document.languageId} code. Return line numbers and reasons:

@@ -19,6 +19,7 @@ import { generateFromTemplates, buildPromptTemplate, PromptEntry } from './templ
 // import { loadCodeFiles, embedTexts, findTopMatches } from './projawareness';
 import { reviewCode } from './review';
 import { loadCodeFiles, chunkCode, embedTexts, cosineSimilarity, findTopMatches } from './projectawareness';
+import { SecurityUtils } from '../utils/sanitizer';
 
 
 const envPath = path.resolve(__dirname, '..', '..', 'backend-server', '.env');
@@ -307,7 +308,7 @@ program
     console.log(chalk.green("\n🤖 Sending to LLM..."));
     const answer = await getFixFromLLM(prompt);
 
-    console.log(chalk.cyan("\n=== LLM Response ===\n"), answer);
+    console.log(chalk.cyan("\n=== LLM Response ===\n"), SecurityUtils.sanitizeLogInput(answer));
   });
 
 program.parse(process.argv);

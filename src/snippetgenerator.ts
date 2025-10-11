@@ -9,7 +9,7 @@ export class SnippetGenerator {
             placeHolder: 'e.g., API endpoint with validation, React component with hooks'
         });
 
-        if (!description) return;
+        if (!description) {return;}
 
         const editor = vscode.window.activeTextEditor;
         const language = editor?.document.languageId || 'javascript';
@@ -36,7 +36,7 @@ export class SnippetGenerator {
             'Test Suite'
         ], { placeHolder: 'Choose boilerplate type' });
 
-        if (!type) return;
+        if (!type) {return;}
 
         const prompt = `Generate a complete ${type} boilerplate with best practices. Include imports, error handling, and comments.`;
 
@@ -59,7 +59,7 @@ export class SnippetGenerator {
             placeHolder: 'e.g., email addresses, phone numbers, URLs'
         });
 
-        if (!description) return;
+        if (!description) {return;}
 
         const prompt = `Generate a regex pattern for: ${description}. Return the pattern and a brief explanation.`;
 

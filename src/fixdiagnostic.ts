@@ -3,7 +3,7 @@ import { getLLMFixForCode } from './extension';
 
 export function fixDiagnosticCommand(context: vscode.ExtensionContext) {
 
- const disposable = vscode.commands.registerCommand("coding.fixDiagnostic", async (document: vscode.TextDocument, diagnostic: vscode.Diagnostic) => {
+ const disposable = vscode.commands.registerCommand("coding.fixDiagnostic2", async (document: vscode.TextDocument, diagnostic: vscode.Diagnostic) => {
   const editor = vscode.window.activeTextEditor;
   if (!editor) {return;}
 

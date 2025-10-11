@@ -1,0 +1,21 @@
+{
+  "recommendations": [
+    "ms-vscode.vscode-typescript-next",
+    "dbaeumer.vscode-eslint",
+    "ms-vscode.vscode-json",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.test-adapter-converter",
+    "ms-vscode.extension-test-runner",
+    "github.vscode-github-actions",
+    "ms-vscode.vscode-github-issue-notebooks",
+    "github.copilot",
+    "ms-vscode.vscode-markdown",
+    "yzhang.markdown-all-in-one",
+    "shd101wyy.markdown-preview-enhanced",
+    "ms-vscode.vscode-yaml"
+  ],
+  "unwantedRecommendations": [
+    "ms-vscode.vscode-typescript",
+    "hookyqr.beautify"
+  ]
+}

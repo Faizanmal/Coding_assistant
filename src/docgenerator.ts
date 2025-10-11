@@ -5,7 +5,7 @@ export class SmartDocGenerator {
     
     public static async generateDocumentation() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const selection = editor.selection;
         const selectedText = editor.document.getText(selection);
@@ -23,7 +23,7 @@ export class SmartDocGenerator {
             'Inline Comments'
         ], { placeHolder: 'Choose documentation style' });
 
-        if (!docStyle) return;
+        if (!docStyle) {return;}
 
         const prompt = `Generate comprehensive ${docStyle} documentation for this ${editor.document.languageId} code. 
         Include parameter descriptions, return values, examples, and any important notes:
@@ -46,7 +46,7 @@ export class SmartDocGenerator {
 
     public static async generateReadme() {
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-        if (!workspaceFolder) return;
+        if (!workspaceFolder) {return;}
 
         const files = await vscode.workspace.findFiles('**/*.{js,ts,py,java,cpp,c}', '**/node_modules/**', 20);
         let codebase = '';
@@ -79,7 +79,7 @@ export class SmartDocGenerator {
 
     public static async generateApiDocs() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const code = editor.document.getText();
         const prompt = `Analyze this ${editor.document.languageId} code and generate API documentation in markdown format. 

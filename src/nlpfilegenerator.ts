@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { callAI } from './cli-api';
+import { generateCode } from './codegenerator';
 import { MultiFileGenerator } from './multifilegenerator';
 
 export class NLPFileGenerator {
@@ -24,7 +24,39 @@ Return ONLY valid JSON in this format:
 
 If no files are mentioned, return empty array [].`;
 
-        const response = await callAI(parsePrompt);
+        const enhancedParsePrompt = `You are an expert software architect. Analyze this request and create a comprehensive file generation plan.
+
+User Request: "${prompt}"
+
+Create a JSON array of files needed for a COMPLETE, PRODUCTION-READY implementation:
+
+For each file, determine:
+1. Exact filename with proper extension
+2. Detailed description of what the file should contain
+3. Programming language/framework
+4. Dependencies and integrations with other files
+
+Return ONLY valid JSON in this format:
+[
+    {
+        "fileName": "server.js",
+        "prompt": "complete Express.js server with middleware, routes, error handling, logging, security, database integration, authentication, API documentation, and production configurations",
+        "language": "javascript"
+    }
+]
+
+Generate a COMPLETE project structure, not just basic files. Include:
+- Main application files
+- Configuration files
+- Documentation files
+- Security and middleware files
+- Database/storage files
+- Testing setup files (if applicable)
+- Environment and deployment files
+
+If no clear file structure can be determined, return empty array [].`;
+        
+        const response = await generateCode(enhancedParsePrompt, 'llama-3.3-70b-versatile');
         
         try {
             const cleaned = response.replace(/```json\n?/, '').replace(/```$/, '').trim();
@@ -42,7 +74,8 @@ If no files are mentioned, return empty array [].`;
         }
 
         try {
-            await MultiFileGenerator.generateMultipleFiles(requests);
+            // Always use multi-agent for NLP requests to get enhanced tracking
+            await MultiFileGenerator.generateMultipleFiles(requests, true);
             return `✅ Generated ${requests.length} files: ${requests.map((r: any) => r.fileName).join(', ')}`;
         } catch (error: any) {
             return `❌ Failed to generate files: ${error.message}`;
@@ -51,11 +84,11 @@ If no files are mentioned, return empty array [].`;
 
     static isNLPFileRequest(prompt: string): boolean {
         const patterns = [
-            /create.*files?/i,
-            /generate.*files?/i,
-            /make.*files?/i,
-            /build.*project/i,
-            /setup.*structure/i,
+            /create.*(?:app|project|website|api|server|component)/i,
+            /build.*(?:app|project|website|api|server|component)/i,
+            /make.*(?:app|project|website|api|server|component)/i,
+            /generate.*(?:app|project|website|api|server|component)/i,
+            /setup.*(?:project|structure|app)/i,
             /scaffold/i
         ];
         

@@ -4,6 +4,17 @@ import ora from 'ora';
 import chalk from 'chalk';
 import { getFixFromLLM } from '.';
 
+function sanitizePath(inputPath: string, basePath: string): string {
+  const normalized = path.normalize(inputPath);
+  const resolved = path.resolve(basePath, normalized);
+  
+  if (!resolved.startsWith(path.resolve(basePath))) {
+    throw new Error('Path traversal detected');
+  }
+  
+  return resolved;
+}
+
 function extractCode(text: string): string {
   const match = text.match(/```(?:\w+)?\n([\s\S]*?)```/);
   return match ? match[1].trim() : text.trim();
@@ -27,9 +38,10 @@ export async function refactorFile(file: string, options: {
   write: boolean;
   format: 'code' | 'markdown' | 'raw';
 }) {
-  const spinner = ora(`Refactoring ${file}...`).start();
+  const spinner = ora(`Refactoring ${path.basename(file)}...`).start();
   try {
-    const input = fs.readFileSync(file, 'utf8');
+    const safePath = sanitizePath(file, process.cwd());
+    const input = fs.readFileSync(safePath, 'utf8');
     const prompt = `Refactor and improve the following code. Keep the same functionality. Return the updated code in a code block:\n\n${input}`;
     
     const llmResponse = await getFixFromLLM(prompt);
@@ -46,13 +58,13 @@ export async function refactorFile(file: string, options: {
     }
 
     const outputPath = options.write
-      ? file
-      : file.replace(/\.ts$/, '.refactored.ts');
+      ? safePath
+      : safePath.replace(/\.ts$/, '.refactored.ts');
 
     fs.writeFileSync(outputPath, outputCode, 'utf8');
-    spinner.succeed(`Saved refactored code to: ${chalk.green(outputPath)}`);
-  } catch (err) {
+    spinner.succeed(`Saved refactored code to: ${chalk.green(path.basename(outputPath))}`);
+  } catch (err: any) {
     spinner.fail('Error during refactoring');
-    console.error(chalk.red(err));
+    console.error(chalk.red(err.message));
   }
 }

@@ -14,7 +14,8 @@
 		"resolveJsonModule": true,
 		"declaration": true,
 		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true
+		"forceConsistentCasingInFileNames": true,
+		"ignoreDeprecations": "5.0"
 	},
 	"ts-node": {
 		"esm": true

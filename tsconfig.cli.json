@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "./src/cli",
+    "rootDir": "./src",
     "outDir": "./dist/cli",
     "target": "es2022",
     "module": "commonjs",
@@ -10,6 +10,6 @@
     "skipLibCheck": true,
     "declaration": false
   },
-   "include": ["src/cli/**/*"],
+   "include": ["src/cli/**/*", "src/utils/**/*"],
    "exclude": ["node_modules"]
 }

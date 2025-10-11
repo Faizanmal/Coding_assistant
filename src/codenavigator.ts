@@ -5,7 +5,7 @@ export class CodeNavigator {
     
     public static async findSimilarCode() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const selection = editor.selection;
         const code = editor.document.getText(selection);
@@ -37,7 +37,7 @@ export class CodeNavigator {
 
     public static async generateCodeMap() {
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-        if (!workspaceFolder) return;
+        if (!workspaceFolder) {return;}
 
         const files = await vscode.workspace.findFiles('**/*.{js,ts,py,java}', '**/node_modules/**', 20);
         let codeMap = '# Code Map\n\n';

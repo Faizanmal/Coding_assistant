@@ -27,7 +27,7 @@ export class RealtimeAnalyzer {
     }
 
     private async analyzeDocument(document: vscode.TextDocument) {
-        if (document.languageId === 'plaintext') return;
+        if (document.languageId === 'plaintext') {return;}
 
         const code = document.getText();
         const prompt = `Analyze this ${document.languageId} code for potential issues, performance problems, and suggest improvements. Return JSON format:

@@ -1,0 +1,139 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "npm run compile",
+      "type": "npm",
+      "script": "compile",
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "npm run watch",
+      "type": "npm",
+      "script": "watch",
+      "group": "build",
+      "presentation": {
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$tsc-watch"],
+      "isBackground": true,
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    },
+    {
+      "label": "npm run build:cli",
+      "type": "npm",
+      "script": "build:cli",
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "npm run test",
+      "type": "npm",
+      "script": "test",
+      "group": "test",
+      "presentation": {
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "npm run lint",
+      "type": "npm",
+      "script": "lint",
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "npm run package",
+      "type": "npm",
+      "script": "package",
+      "group": "build",
+      "presentation": {
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      
+      "dependsOn": ["npm run compile"]
+    },
+    {
+      "label": "Start Backend Server",
+      "type": "shell",
+      "command": "npm start",
+      "options": {
+        "cwd": "${workspaceFolder}/backend-server"
+      },
+      "group": "build",
+      "presentation": {
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^Server running on port (\\d+)$",
+          "file": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^Starting server...",
+          "endsPattern": "^Server running on port \\d+$"
+        }
+      }
+    },
+    {
+      "label": "Clean Build",
+      "type": "shell",
+      "command": "rm -rf out dist *.vsix",
+      "windows": {
+        "command": "if exist out rmdir /s /q out && if exist dist rmdir /s /q dist && del /q *.vsix 2>nul || echo \"No .vsix files to delete\""
+      },
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    }
+  ]
+}

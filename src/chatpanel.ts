@@ -455,43 +455,4 @@ export class ChatPanel {
         this._context.globalState.update('AIChatHistory', history);
     }
 
-    public dispose() {
-        ChatPanel.currentPanel = undefined;
-        this._panel.dispose();
-        while (this._disposables.length) {
-            const x = this._disposables.pop();
-            if (x) {
-                x.dispose();
-            }
-        }
-    }
-}, index: parseInt(index) });
-    			});
-  			});
-		});
-
-        function scrollToBottom() {
-        	const chat = document.getElementById('chat');
-	        if (chat) {
-		    chat.scrollTop = chat.scrollHeight;
-	        }}
-
-            window.addEventListener('load', scrollToBottom);
-            window.addEventListener('message', scrollToBottom);
-
-	</script>
-
-
-</body>
-</html>
-        `;
-    }
-
-    private _getChatHistory(): { role: string; content: string }[] {
-        return this._context.globalState.get('AIChatHistory') || [];
-    }
-
-    private _saveChatHistory(history: { role: string; content: string }[]) {
-        this._context.globalState.update('AIChatHistory', history);
-    }
 }

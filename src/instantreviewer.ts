@@ -9,7 +9,7 @@ export class InstantReviewer {
 
     public static async reviewCurrentFile() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const code = editor.document.getText();
         const prompt = `Review this ${editor.document.languageId} code and provide specific feedback on:
@@ -90,7 +90,7 @@ ${code}`;
 
     public static async quickScan() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const selection = editor.selection;
         const code = editor.document.getText(selection);

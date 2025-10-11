@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Coding Assistant Webview</title>
+    <style>
+        body {
+            font-family: var(--vscode-font-family);
+            background: var(--vscode-editor-background);
+            color: var(--vscode-editor-foreground);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: var(--vscode-panel-background);
+            border-radius: 8px;
+            border: 1px solid var(--vscode-panel-border);
+        }
+        .content {
+            flex: 1;
+            background: var(--vscode-textBlockQuote-background);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--vscode-panel-border);
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--vscode-panel-border);
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .highlight {
+            color: var(--vscode-charts-blue);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 AI Coding Assistant</h1>
+        <p>Modular webview architecture for enhanced development experience</p>
+    </div>
+    
+    <div class="content">
+        <h2>Available Features</h2>
+        <ul class="feature-list">
+            <li><span class="highlight">Enhanced Sidebar:</span> Full-featured interface with advanced coordination</li>
+            <li><span class="highlight">Lightweight Sidebar:</span> Streamlined interface for simple operations</li>
+            <li><span class="highlight">Multi-file Generation:</span> Create multiple files with intelligent agents</li>
+            <li><span class="highlight">Terminal Integration:</span> Execute commands with live output</li>
+            <li><span class="highlight">Project Analysis:</span> Smart codebase understanding</li>
+            <li><span class="highlight">Code Quality:</span> Smell detection and productivity tracking</li>
+            <li><span class="highlight">Web Search:</span> Real-time information integration</li>
+            <li><span class="highlight">Diff Viewer:</span> File comparison capabilities</li>
+        </ul>
+        
+        <h2>Architecture Benefits</h2>
+        <ul class="feature-list">
+            <li><span class="highlight">Modular Design:</span> Clean separation of concerns</li>
+            <li><span class="highlight">Type Safety:</span> Comprehensive TypeScript interfaces</li>
+            <li><span class="highlight">Performance:</span> Optimized for different use cases</li>
+            <li><span class="highlight">Maintainability:</span> Easy to extend and debug</li>
+            <li><span class="highlight">Security:</span> Input validation and sanitization</li>
+        </ul>
+        
+        <p style="margin-top: 20px; font-style: italic; text-align: center;">
+            This webview is now part of a modular architecture. 
+            Check the sidebar for the full AI assistant experience!
+        </p>
+    </div>
+    
+    <script>
+        // Initialize webview
+        console.log('🎯 Webview template loaded successfully');
+        
+        // Notify extension of readiness
+        if (typeof acquireVsCodeApi !== 'undefined') {
+            const vscode = acquireVsCodeApi();
+            vscode.postMessage({
+                command: 'webviewReady',
+                timestamp: new Date().toISOString(),
+                source: 'main-template'
+            });
+        }
+    </script>
+</body>
+</html>

@@ -5,7 +5,7 @@ export class PerformanceProfiler {
     
     public static async analyzePerformance() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const code = editor.document.getText();
         const prompt = `Analyze this ${editor.document.languageId} code for performance issues and bottlenecks. 
@@ -51,7 +51,7 @@ export class PerformanceProfiler {
 
     public static async generateBenchmark() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const selection = editor.selection;
         const selectedText = editor.document.getText(selection);

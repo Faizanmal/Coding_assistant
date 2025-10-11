@@ -3,6 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import { getFixFromLLM } from '.';
+import { SecurityUtils } from '../utils/sanitizer';
 
 export async function explainDiff(oldPath: string, newPath: string) {
   if (!fs.existsSync(oldPath) || !fs.existsSync(newPath)) {
@@ -29,5 +30,5 @@ Respond with a short, professional explanation in markdown format.
   const explanation = await getFixFromLLM(prompt);
 
   console.log('\n--- Diff Explanation ---\n');
-  console.log(explanation);
+  console.log(SecurityUtils.sanitizeLogInput(explanation));
 }

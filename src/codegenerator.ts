@@ -1,14 +1,16 @@
 import * as vscode from 'vscode';
 import * as dotenv from 'dotenv';
 import fetch from 'node-fetch';
+import { SecurityUtils } from './utils/sanitizer';
+import { ConnectionManager } from './integration/connectionManager';
 
 dotenv.config();
-const api = process.env.API_KEY;
-const tog_api = process.env.Together_api;
-const op_api = process.env.Open_router_api;
-const mist_api = process.env.Misrtal_api;
-const cere_api = process.env.Cerebras_api;
-const tav_api = process.env.Tavily_api;
+const api = process.env.GROQ_API_KEY;
+const tog_api = process.env.TOGETHER_API_KEY;
+const op_api = process.env.OPEN_ROUTER_API_KEY;
+const mist_api = process.env.MISTRAL_API_KEY;
+const cere_api = process.env.CEREBRAS_API_KEY;
+const tav_api = process.env.TAVILY_API_KEY;
 
 
 if (!api && !tog_api && !op_api && !mist_api && !cere_api && !tav_api) {
@@ -85,6 +87,15 @@ export async function callAI(this: any, prompt: string): Promise<string> {
 }
 
 export async function getFixFromLLM(prompt: string): Promise<string> {
+  // Try backend first, fallback to direct API
+  try {
+    const backendResult = await ConnectionManager.sendToBackend('/complete', { prompt });
+    if (backendResult?.completion) {
+      return backendResult.completion;
+    }
+  } catch (error) {
+    console.log('Backend unavailable, using direct API');
+  }
 
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -103,7 +114,7 @@ export async function getFixFromLLM(prompt: string): Promise<string> {
   });
 
   const data = await res.json() as { choices?: { message?: { content?: string } }[] };
-  console.log(data);
+  console.log(SecurityUtils.sanitizeLogInput(JSON.stringify(data)));
   return data.choices?.[0]?.message?.content || 'No fix generated';
 }
 
@@ -247,6 +258,6 @@ export async function tavilySearch(query: string): Promise<TavilyResult> {
 	}
 
 	const data = await response.json();
-  console.log("Respones:", data);
+  console.log("Response:", SecurityUtils.sanitizeLogInput(JSON.stringify(data)));
 	return data as TavilyResult;
 }

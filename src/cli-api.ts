@@ -2,12 +2,16 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 
 // Load environment variables
-const envPath = path.resolve(__dirname, '..', '..', 'backend-server', '.env');
+const envPath = path.resolve(__dirname, '..', '..', '.env');
 dotenv.config({ path: envPath });
 
-const api = process.env.API_KEY;
+const api = process.env.GROQ_API_KEY;
 
 export async function callAI(prompt: string): Promise<string> {
+  return callLLM(prompt);
+}
+
+export async function callLLM(prompt: string, model?: string, provider?: string): Promise<string> {
   try {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -16,7 +20,7 @@ export async function callAI(prompt: string): Promise<string> {
         'Authorization': `Bearer ${api}`
       },
       body: JSON.stringify({
-        model: "llama3-70b-8192",
+        model: "llama-3.3-70b-versatile",
         messages: [
           { role: 'system', content: 'You are a helpful code assistant. Provide only the code, no explanation, no markdown formatting. Add comments in code if needed.' },
           { role: 'user', content: prompt }

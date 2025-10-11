@@ -5,7 +5,7 @@ export class CodeAssistant {
     
     public static async explainCode() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const selection = editor.selection;
         const code = editor.document.getText(selection);
@@ -38,7 +38,7 @@ ${code}`;
 
     public static async generateTests() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const code = editor.document.getText();
         const prompt = `Generate comprehensive unit tests for this ${editor.document.languageId} code:
@@ -59,7 +59,7 @@ ${code}`;
 
     public static async optimizeCode() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const selection = editor.selection;
         const code = editor.document.getText(selection);

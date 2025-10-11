@@ -80,14 +80,14 @@ export class SmartGitIntegration {
 
     public static async suggestBranchName() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const workDescription = await vscode.window.showInputBox({
             prompt: 'Describe what you\'re working on',
             placeHolder: 'e.g., Add user authentication feature'
         });
 
-        if (!workDescription) return;
+        if (!workDescription) {return;}
 
         const prompt = `Generate a git branch name following best practices for this work description: "${workDescription}"
         Return only the branch name, no explanations.`;

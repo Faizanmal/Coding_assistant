@@ -5,7 +5,7 @@ export class AdvancedRefactorAssistant {
     
     public static async refactorSelection() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const selection = editor.selection;
         const selectedText = editor.document.getText(selection);
@@ -24,7 +24,7 @@ export class AdvancedRefactorAssistant {
             'Convert to Modern Syntax'
         ], { placeHolder: 'Choose refactoring type' });
 
-        if (!options) return;
+        if (!options) {return;}
 
         const prompt = `Refactor this ${editor.document.languageId} code using "${options}" technique. 
         Return only the refactored code without explanations:
@@ -46,7 +46,7 @@ export class AdvancedRefactorAssistant {
 
     public static async suggestRefactorings() {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) return;
+        if (!editor) {return;}
 
         const code = editor.document.getText();
         const prompt = `Analyze this ${editor.document.languageId} code and suggest specific refactoring opportunities. 

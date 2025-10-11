@@ -2,7 +2,25 @@ import fs from 'fs';
 import path from 'path';
 import ora from 'ora';
 import chalk from 'chalk';
-import { getFixFromLLM } from '.'; 
+import { getFixFromLLM } from '.';
+
+function sanitizePath(inputPath: string, basePath: string): string {
+  const normalized = path.normalize(inputPath);
+  const resolved = path.resolve(basePath, normalized);
+  
+  if (!resolved.startsWith(path.resolve(basePath))) {
+    throw new Error('Path traversal detected');
+  }
+  
+  return resolved;
+}
+
+function sanitizeTemplateName(name: string): string {
+  if (!/^[a-zA-Z0-9_-]+$/.test(name)) {
+    throw new Error('Invalid template name');
+  }
+  return name;
+} 
 
 function replacePlaceholders(template: string, args: string[]): string {
   return template.replace(/{(\w+)}/g, (_, key) => args.shift() || `{${key}}`);
@@ -24,8 +42,12 @@ export async function generateFromTemplate(templateName: string, args: string[])
   const spinner = ora(`Generating code from template: ${templateName}`).start();
 
   try {
-    const templatePath = path.join(process.cwd(), 'templates', `${templateName}.txt`);
-    if (!fs.existsSync(templatePath)) {throw new Error(`Template not found: ${templatePath}`);}
+    const sanitizedName = sanitizeTemplateName(templateName);
+    const templatePath = sanitizePath(`templates/${sanitizedName}.txt`, process.cwd());
+    
+    if (!fs.existsSync(templatePath)) {
+      throw new Error(`Template not found: ${path.basename(templatePath)}`);
+    }
 
     const template = fs.readFileSync(templatePath, 'utf8');
     const prompt = replacePlaceholders(template, [...args]);

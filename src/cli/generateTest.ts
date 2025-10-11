@@ -3,7 +3,18 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import { getFixFromLLM } from '.'; 
+import { getFixFromLLM } from '.';
+
+function sanitizePath(inputPath: string, basePath: string): string {
+  const normalized = path.normalize(inputPath);
+  const resolved = path.resolve(basePath, normalized);
+  
+  if (!resolved.startsWith(path.resolve(basePath))) {
+    throw new Error('Path traversal detected');
+  }
+  
+  return resolved;
+} 
 
 interface Options {
   framework?: 'jest' | 'mocha' | 'vitest';
@@ -13,12 +24,15 @@ interface Options {
 export async function generateTest(target: string, options: Options) {
   const framework = options.framework || 'jest';
 
-  if (!fs.existsSync(target)) {
-    console.error(`❌ Target file ${target} not found.`);
-    process.exit(1);
-  }
+  try {
+    const safePath = sanitizePath(target, process.cwd());
+    
+    if (!fs.existsSync(safePath)) {
+      console.error(`❌ Target file ${path.basename(target)} not found.`);
+      process.exit(1);
+    }
 
-  const sourceCode = fs.readFileSync(target, 'utf-8');
+    const sourceCode = fs.readFileSync(safePath, 'utf-8');
 
   const prompt = `
 You are an expert software engineer.
@@ -36,10 +50,15 @@ Only return the test file content, no explanation.
   const testCode = await getFixFromLLM(prompt); // this calls your LLM
 
   if (options.output) {
-    fs.writeFileSync(options.output, testCode, 'utf-8');
-    console.log(`✅ Test code written to ${options.output}`);
+    const safeOutputPath = sanitizePath(options.output, process.cwd());
+    fs.writeFileSync(safeOutputPath, testCode, 'utf-8');
+    console.log(`✅ Test code written to ${path.basename(options.output)}`);
   } else {
     console.log('\n--- Generated Test Code ---\n');
     console.log(testCode);
   }
+} catch (error: any) {
+  console.error(`❌ Test generation failed: ${error.message}`);
+  process.exit(1);
+}
 }

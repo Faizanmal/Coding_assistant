@@ -1,0 +1,443 @@
+/* Shared webview styles for modular architecture */
+
+/* CSS Variables for VS Code Theme Integration */
+:root {
+    --webview-primary-color: var(--vscode-charts-blue, #007acc);
+    --webview-secondary-color: var(--vscode-charts-green, #4caf50);
+    --webview-error-color: var(--vscode-errorForeground, #f44336);
+    --webview-warning-color: var(--vscode-warningForeground, #ff9800);
+    --webview-success-color: var(--vscode-charts-green, #4caf50);
+    
+    --webview-border-radius: 6px;
+    --webview-spacing-xs: 4px;
+    --webview-spacing-sm: 8px;
+    --webview-spacing-md: 16px;
+    --webview-spacing-lg: 24px;
+    --webview-spacing-xl: 32px;
+    
+    --webview-font-size-xs: 0.75rem;
+    --webview-font-size-sm: 0.875rem;
+    --webview-font-size-md: 1rem;
+    --webview-font-size-lg: 1.125rem;
+    --webview-font-size-xl: 1.25rem;
+}
+
+/* Theme-specific overrides */
+body.light-theme {
+    --vscode-editor-background: #ffffff;
+    --vscode-editor-foreground: #000000;
+    --vscode-titleBar-activeBackground: #f3f3f3;
+    --vscode-titleBar-activeForeground: #000000;
+    --vscode-panel-background: #f8f8f8;
+    --vscode-panel-border: #e0e0e0;
+    --vscode-input-background: #ffffff;
+    --vscode-input-foreground: #000000;
+    --vscode-input-border: #cccccc;
+    --vscode-button-background: #0078d4;
+    --vscode-button-foreground: #ffffff;
+    --vscode-button-secondaryBackground: #e1e1e1;
+    --vscode-button-secondaryForeground: #000000;
+    --vscode-textBlockQuote-background: #f0f0f0;
+    --vscode-inputValidation-infoBorder: #e3f2fd;
+    --vscode-charts-blue: #0078d4;
+    --vscode-charts-green: #107c10;
+    --vscode-errorForeground: #d32f2f;
+    --vscode-warningForeground: #f57c00;
+}
+
+body.dark-theme {
+    --vscode-editor-background: #1e1e1e;
+    --vscode-editor-foreground: #d4d4d4;
+    --vscode-titleBar-activeBackground: #2d2d30;
+    --vscode-titleBar-activeForeground: #cccccc;
+    --vscode-panel-background: #252526;
+    --vscode-panel-border: #3e3e42;
+    --vscode-input-background: #3c3c3c;
+    --vscode-input-foreground: #cccccc;
+    --vscode-input-border: #3e3e42;
+    --vscode-button-background: #0e639c;
+    --vscode-button-foreground: #ffffff;
+    --vscode-button-secondaryBackground: #3c3c3c;
+    --vscode-button-secondaryForeground: #cccccc;
+    --vscode-textBlockQuote-background: #2d2d30;
+    --vscode-inputValidation-infoBorder: #007acc;
+    --vscode-charts-blue: #007acc;
+    --vscode-charts-green: #4caf50;
+    --vscode-errorForeground: #f48771;
+    --vscode-warningForeground: #ffcc02;
+}
+
+/* Base reset and layout */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--vscode-font-family, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif);
+    font-size: var(--vscode-font-size, 13px);
+    background: var(--vscode-editor-background);
+    color: var(--vscode-editor-foreground);
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    margin-bottom: var(--webview-spacing-sm);
+    color: var(--vscode-titleBar-activeForeground);
+}
+
+h1 { font-size: var(--webview-font-size-xl); }
+h2 { font-size: var(--webview-font-size-lg); }
+h3 { font-size: var(--webview-font-size-md); }
+h4, h5, h6 { font-size: var(--webview-font-size-sm); }
+
+p {
+    margin-bottom: var(--webview-spacing-sm);
+    line-height: 1.6;
+}
+
+/* Layout components */
+.webview-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.webview-header {
+    background: var(--vscode-titleBar-activeBackground);
+    padding: var(--webview-spacing-md);
+    border-bottom: 1px solid var(--vscode-panel-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.webview-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--webview-spacing-md);
+}
+
+.webview-footer {
+    background: var(--vscode-panel-background);
+    border-top: 1px solid var(--vscode-panel-border);
+    padding: var(--webview-spacing-md);
+    flex-shrink: 0;
+}
+
+/* Form controls */
+.webview-input {
+    width: 100%;
+    padding: var(--webview-spacing-sm) var(--webview-spacing-md);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: var(--webview-border-radius);
+    background: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    font-family: inherit;
+    font-size: var(--webview-font-size-sm);
+    transition: border-color 0.2s;
+}
+
+.webview-input:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder, var(--webview-primary-color));
+}
+
+.webview-textarea {
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+}
+
+.webview-select {
+    padding: var(--webview-spacing-xs) var(--webview-spacing-sm);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: var(--webview-border-radius);
+    background: var(--vscode-dropdown-background);
+    color: var(--vscode-dropdown-foreground);
+    font-size: var(--webview-font-size-xs);
+    min-width: 100px;
+}
+
+/* Buttons */
+.webview-btn {
+    padding: var(--webview-spacing-sm) var(--webview-spacing-md);
+    border: none;
+    border-radius: var(--webview-border-radius);
+    font-size: var(--webview-font-size-xs);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--webview-spacing-xs);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.webview-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.webview-btn-primary {
+    background: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+}
+
+.webview-btn-primary:hover:not(:disabled) {
+    background: var(--vscode-button-hoverBackground, var(--webview-primary-color));
+    transform: translateY(-1px);
+}
+
+.webview-btn-secondary {
+    background: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+}
+
+.webview-btn-secondary:hover:not(:disabled) {
+    background: var(--vscode-button-secondaryHoverBackground);
+    transform: translateY(-1px);
+}
+
+.webview-btn-danger {
+    background: var(--webview-error-color);
+    color: white;
+}
+
+.webview-btn-success {
+    background: var(--webview-success-color);
+    color: white;
+}
+
+/* Status indicators */
+.webview-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--webview-spacing-xs);
+    padding: var(--webview-spacing-xs) var(--webview-spacing-sm);
+    border-radius: var(--webview-border-radius);
+    font-size: var(--webview-font-size-xs);
+    font-weight: 500;
+}
+
+.webview-status-success {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--webview-success-color);
+    border: 1px solid var(--webview-success-color);
+}
+
+.webview-status-error {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--webview-error-color);
+    border: 1px solid var(--webview-error-color);
+}
+
+.webview-status-warning {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--webview-warning-color);
+    border: 1px solid var(--webview-warning-color);
+}
+
+.webview-status-info {
+    background: rgba(0, 122, 204, 0.1);
+    color: var(--webview-primary-color);
+    border: 1px solid var(--webview-primary-color);
+}
+
+/* Cards and panels */
+.webview-card {
+    background: var(--vscode-panel-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: var(--webview-border-radius);
+    padding: var(--webview-spacing-md);
+    margin-bottom: var(--webview-spacing-md);
+}
+
+.webview-panel {
+    background: var(--vscode-textBlockQuote-background);
+    border-left: 4px solid var(--webview-primary-color);
+    padding: var(--webview-spacing-md);
+    margin: var(--webview-spacing-sm) 0;
+}
+
+/* Lists */
+.webview-list {
+    list-style: none;
+    padding: 0;
+}
+
+.webview-list-item {
+    padding: var(--webview-spacing-sm) 0;
+    border-bottom: 1px solid var(--vscode-panel-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.webview-list-item:last-child {
+    border-bottom: none;
+}
+
+/* Progress and loading */
+.webview-progress {
+    width: 100%;
+    height: 4px;
+    background: var(--vscode-panel-border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.webview-progress-bar {
+    height: 100%;
+    background: var(--webview-primary-color);
+    transition: width 0.3s ease;
+    border-radius: 2px;
+}
+
+.webview-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--vscode-panel-border);
+    border-top: 2px solid var(--webview-primary-color);
+    border-radius: 50%;
+    animation: webview-spin 1s linear infinite;
+}
+
+@keyframes webview-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Animations */
+.webview-fade-in {
+    animation: webview-fadeIn 0.3s ease-in;
+}
+
+@keyframes webview-fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.webview-pulse {
+    animation: webview-pulse 2s infinite;
+}
+
+@keyframes webview-pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Utility classes */
+.webview-flex {
+    display: flex;
+}
+
+.webview-flex-col {
+    flex-direction: column;
+}
+
+.webview-items-center {
+    align-items: center;
+}
+
+.webview-justify-center {
+    justify-content: center;
+}
+
+.webview-justify-between {
+    justify-content: space-between;
+}
+
+.webview-gap-xs { gap: var(--webview-spacing-xs); }
+.webview-gap-sm { gap: var(--webview-spacing-sm); }
+.webview-gap-md { gap: var(--webview-spacing-md); }
+.webview-gap-lg { gap: var(--webview-spacing-lg); }
+
+.webview-mt-xs { margin-top: var(--webview-spacing-xs); }
+.webview-mt-sm { margin-top: var(--webview-spacing-sm); }
+.webview-mt-md { margin-top: var(--webview-spacing-md); }
+.webview-mt-lg { margin-top: var(--webview-spacing-lg); }
+
+.webview-mb-xs { margin-bottom: var(--webview-spacing-xs); }
+.webview-mb-sm { margin-bottom: var(--webview-spacing-sm); }
+.webview-mb-md { margin-bottom: var(--webview-spacing-md); }
+.webview-mb-lg { margin-bottom: var(--webview-spacing-lg); }
+
+.webview-text-xs { font-size: var(--webview-font-size-xs); }
+.webview-text-sm { font-size: var(--webview-font-size-sm); }
+.webview-text-md { font-size: var(--webview-font-size-md); }
+.webview-text-lg { font-size: var(--webview-font-size-lg); }
+.webview-text-xl { font-size: var(--webview-font-size-xl); }
+
+.webview-text-center { text-align: center; }
+.webview-text-right { text-align: right; }
+
+.webview-font-bold { font-weight: 600; }
+.webview-font-normal { font-weight: 400; }
+
+.webview-opacity-50 { opacity: 0.5; }
+.webview-opacity-75 { opacity: 0.75; }
+
+.webview-hidden { display: none; }
+.webview-visible { display: block; }
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .webview-header {
+        flex-direction: column;
+        gap: var(--webview-spacing-sm);
+    }
+    
+    .webview-content {
+        padding: var(--webview-spacing-sm);
+    }
+    
+    .webview-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--vscode-scrollbarSlider-background);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--vscode-scrollbarSlider-hoverBackground);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--vscode-scrollbarSlider-activeBackground);
+}
+
+/* Focus management */
+.webview-focus-visible:focus-visible {
+    outline: 2px solid var(--vscode-focusBorder, var(--webview-primary-color));
+    outline-offset: 2px;
+}
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+    .webview-btn {
+        border: 1px solid currentColor;
+    }
+    
+    .webview-card {
+        border-width: 2px;
+    }
+}

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { getFixFromLLM } from '.'; // Ensure this is correct
+import { SecurityUtils } from '../utils/sanitizer';
 
 interface ReviewOptions {
   file: string;
@@ -20,7 +21,7 @@ export async function reviewCode(options: ReviewOptions): Promise<void> {
     if (!file) { return console.error('❌ Error: --file is required');}
 
     if (!fs.existsSync(file)) {
-      console.error(`❌ Error: File not found at ${file}`);
+      console.error(`❌ Error: File not found at ${SecurityUtils.sanitizeLogInput(file)}`);
       process.exit(1);
     }
 
@@ -31,7 +32,7 @@ export async function reviewCode(options: ReviewOptions): Promise<void> {
       }
 
       if (!fs.existsSync(fileB)) {
-        console.error(`❌ Error: File B not found at ${fileB}`);
+        console.error(`❌ Error: File B not found at ${SecurityUtils.sanitizeLogInput(fileB)}`);
         process.exit(1);
       }
     }
@@ -68,7 +69,7 @@ export async function reviewCode(options: ReviewOptions): Promise<void> {
       console.log(response);
     }
   } catch (err) {
-    console.error('❌ Error during review:', err);
+    console.error('❌ Error during review:', SecurityUtils.sanitizeLogInput(String(err)));
     process.exit(1);
   }
 }
