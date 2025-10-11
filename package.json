@@ -922,6 +922,30 @@
         "title": "📊 Show Provider Status Dashboard",
         "category": "AI Providers",
         "icon": "$(dashboard)"
+      },
+      {
+        "command": "coding-assistant.startContinuousFixer",
+        "title": "🔄 Start Continuous Error Fixer",
+        "category": "Continuous Error Fixer",
+        "icon": "$(play)"
+      },
+      {
+        "command": "coding-assistant.stopContinuousFixer",
+        "title": "🛑 Stop Continuous Error Fixer",
+        "category": "Continuous Error Fixer",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "coding-assistant.toggleContinuousFixer",
+        "title": "🔀 Toggle Continuous Error Fixer",
+        "category": "Continuous Error Fixer",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "coding-assistant.showFixerStatus",
+        "title": "📊 Show Continuous Fixer Status",
+        "category": "Continuous Error Fixer",
+        "icon": "$(info)"
       }
     ],
     "keybindings": [

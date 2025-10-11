@@ -74,6 +74,7 @@ import { VoiceCodeMode } from './voice-code-mode';
 import { InteractiveWhiteboard, DiagramType } from './interactive-whiteboard';
 import { AIDebugReplay } from './ai-debug-replay';
 import { InstantReviewer } from './instantreviewer';
+import { ContinuousErrorFixer } from './continuous-error-fixer';
 import { MultiAgentFileEditor } from './multiagentfileeditor';
 import { EditTracker } from './edittracker';
 import { ConnectionManager } from './integration/connectionManager';
@@ -1931,6 +1932,76 @@ ${changes.length > 0 ? changes.map(change => `
   });
   
   context.subscriptions.push(startRecordingCommand, stopRecordingCommand, replaySessionCommand);
+
+  // Continuous Error Fixer System
+  let continuousErrorFixer: ContinuousErrorFixer | null = null;
+  
+  const startContinuousFixerCommand = vscode.commands.registerCommand('coding-assistant.startContinuousFixer', async () => {
+    try {
+      if (!continuousErrorFixer) {
+        // Try to get the chat panel from SimpleSidebarViewProvider
+        const chatPanel = provider ? (provider as any)._view : undefined;
+        continuousErrorFixer = new ContinuousErrorFixer(context, chatPanel);
+      }
+      await continuousErrorFixer.start();
+    } catch (error) {
+      vscode.window.showErrorMessage(`Failed to start Continuous Error Fixer: ${error}`);
+    }
+  });
+  
+  const stopContinuousFixerCommand = vscode.commands.registerCommand('coding-assistant.stopContinuousFixer', async () => {
+    if (continuousErrorFixer) {
+      await continuousErrorFixer.stop();
+    } else {
+      vscode.window.showWarningMessage('Continuous Error Fixer is not running');
+    }
+  });
+  
+  const toggleContinuousFixerCommand = vscode.commands.registerCommand('coding-assistant.toggleContinuousFixer', async () => {
+    try {
+      if (!continuousErrorFixer) {
+        const chatPanel = provider ? (provider as any)._view : undefined;
+        continuousErrorFixer = new ContinuousErrorFixer(context, chatPanel);
+      }
+      await continuousErrorFixer.toggle();
+    } catch (error) {
+      vscode.window.showErrorMessage(`Failed to toggle Continuous Error Fixer: ${error}`);
+    }
+  });
+  
+  const showFixerStatusCommand = vscode.commands.registerCommand('coding-assistant.showFixerStatus', async () => {
+    if (!continuousErrorFixer) {
+      vscode.window.showInformationMessage('Continuous Error Fixer is not initialized');
+      return;
+    }
+    
+    const status = continuousErrorFixer.getStatus();
+    const statusMessage = `
+**Continuous Error Fixer Status**
+- Running: ${status.isRunning ? '✅' : '❌'}
+- Active Looping Agents: ${status.activeLoopingAgents}
+- Active Replacing Agents: ${status.activeReplacingAgents}
+- Queued Errors: ${status.queuedErrors}
+    `.trim();
+    
+    vscode.window.showInformationMessage(statusMessage);
+  });
+  
+  context.subscriptions.push(
+    startContinuousFixerCommand,
+    stopContinuousFixerCommand,
+    toggleContinuousFixerCommand,
+    showFixerStatusCommand
+  );
+  
+  // Clean up on deactivation
+  context.subscriptions.push({
+    dispose: () => {
+      if (continuousErrorFixer) {
+        continuousErrorFixer.dispose();
+      }
+    }
+  });
 
 }
 
