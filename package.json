@@ -22,7 +22,10 @@
     "Machine Learning",
     "Programming Languages",
     "Snippets",
-    "Other"
+    "Other",
+    "Data Science",
+    "Testing",
+    "Visualization"
   ],
   "keywords": [
     "ai",
@@ -946,6 +949,354 @@
         "title": "📊 Show Continuous Fixer Status",
         "category": "Continuous Error Fixer",
         "icon": "$(info)"
+      },
+      {
+        "command": "coding.dependency.analyze",
+        "title": "📦 Analyze Project Dependencies",
+        "category": "Revolutionary Features",
+        "icon": "$(package)"
+      },
+      {
+        "command": "coding.dependency.autoUpdate",
+        "title": "⬆️ Auto-Update Dependencies",
+        "category": "Revolutionary Features",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "coding.dependency.checkSecurity",
+        "title": "🔒 Check Dependency Security",
+        "category": "Revolutionary Features",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "coding.performance.analyzeFile",
+        "title": "⚡ Analyze File Performance",
+        "category": "Revolutionary Features",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "coding.performance.analyzeWorkspace",
+        "title": "🔍 Analyze Workspace Performance",
+        "category": "Revolutionary Features",
+        "icon": "$(search)"
+      },
+      {
+        "command": "coding.performance.autoFix",
+        "title": "🛠️ Auto-Fix Performance Issues",
+        "category": "Revolutionary Features",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "coding.migration.start",
+        "title": "🔄 Start Code Migration Wizard",
+        "category": "Revolutionary Features",
+        "icon": "$(arrow-both)"
+      },
+      {
+        "command": "coding.env.scan",
+        "title": "🔐 Scan Environment Configuration",
+        "category": "Revolutionary Features",
+        "icon": "$(lock)"
+      },
+      {
+        "command": "coding.env.generateTemplate",
+        "title": "📝 Generate .env Template",
+        "category": "Revolutionary Features",
+        "icon": "$(file-add)"
+      },
+      {
+        "command": "coding.env.checkDrift",
+        "title": "🔍 Check Config Drift",
+        "category": "Revolutionary Features",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "coding.nl.query",
+        "title": "💬 Natural Language Query",
+        "category": "Revolutionary Features",
+        "icon": "$(comment)"
+      },
+      {
+        "command": "coding.nl.clearHistory",
+        "title": "🗑️ Clear NL Query History",
+        "category": "Revolutionary Features",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "coding.collaboration.start",
+        "title": "👥 Start Team Collaboration",
+        "category": "Team Collaboration",
+        "icon": "$(team)"
+      },
+      {
+        "command": "coding.collaboration.showDashboard",
+        "title": "📊 Show Collaboration Dashboard",
+        "category": "Team Collaboration",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "coding.collaboration.recordDecision",
+        "title": "🏗️ Record Architectural Decision",
+        "category": "Team Collaboration",
+        "icon": "$(bookmark)"
+      },
+      {
+        "command": "coding.collaboration.showProductivity",
+        "title": "📈 Show Team Productivity",
+        "category": "Team Collaboration",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "coding.pr.review",
+        "title": "🔍 Review Pull Request",
+        "category": "Smart PR Review",
+        "icon": "$(git-pull-request)"
+      },
+      {
+        "command": "coding.pr.viewPatterns",
+        "title": "📊 View Review Patterns",
+        "category": "Smart PR Review",
+        "icon": "$(pattern)"
+      },
+      {
+        "command": "coding.debug.smartBreakpoint",
+        "title": "🎯 Create Smart Breakpoint",
+        "category": "Advanced Debugging",
+        "icon": "$(debug-breakpoint)"
+      },
+      {
+        "command": "coding.debug.analyzeStack",
+        "title": "🔍 Analyze Stack Trace",
+        "category": "Advanced Debugging",
+        "icon": "$(server-process)"
+      },
+      {
+        "command": "coding.debug.diagnoseError",
+        "title": "🐛 Diagnose Error",
+        "category": "Advanced Debugging",
+        "icon": "$(bug)"
+      },
+      {
+        "command": "coding.debug.showPanel",
+        "title": "🛠️ Show Debug Assistant",
+        "category": "Advanced Debugging",
+        "icon": "$(debug-alt)"
+      },
+      {
+        "command": "coding.knowledge.recordLesson",
+        "title": "📚 Record Lesson Learned",
+        "category": "Team Knowledge",
+        "icon": "$(book)"
+      },
+      {
+        "command": "coding.knowledge.recordDecision",
+        "title": "💡 Record Architectural Decision",
+        "category": "Team Knowledge",
+        "icon": "$(lightbulb)"
+      },
+      {
+        "command": "coding.knowledge.recordPattern",
+        "title": "✨ Record Team Pattern",
+        "category": "Team Knowledge",
+        "icon": "$(symbol-pattern)"
+      },
+      {
+        "command": "coding.knowledge.showDashboard",
+        "title": "📖 Show Knowledge Dashboard",
+        "category": "Team Knowledge",
+        "icon": "$(library)"
+      },
+      {
+        "command": "coding.security.dashboard",
+        "title": "🛡️ Enterprise Security Dashboard",
+        "category": "Enterprise Security",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "coding.security.scanCompliance",
+        "title": "📋 Scan Compliance (GDPR, SOX, PCI)",
+        "category": "Enterprise Security",
+        "icon": "$(law)"
+      },
+      {
+        "command": "coding.security.authenticate",
+        "title": "🔐 Enterprise SSO Authentication",
+        "category": "Enterprise Security",
+        "icon": "$(account)"
+      },
+      {
+        "command": "coding.analytics.dashboard",
+        "title": "📊 Enterprise Analytics Dashboard",
+        "category": "Enterprise Analytics",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "coding.analytics.trackCustomEvent",
+        "title": "📈 Track Custom Event",
+        "category": "Enterprise Analytics",
+        "icon": "$(pulse)"
+      },
+      {
+        "command": "coding.analytics.testAB",
+        "title": "🧪 Test A/B Experiment",
+        "category": "Enterprise Analytics",
+        "icon": "$(beaker)"
+      },
+      {
+        "command": "coding.integration.dashboard",
+        "title": "🔗 Enterprise Integration Hub",
+        "category": "Enterprise Integration",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "coding.integration.createJiraIssue",
+        "title": "🎫 Create Jira Issue",
+        "category": "Enterprise Integration",
+        "icon": "$(issue-opened)"
+      },
+      {
+        "command": "coding.integration.sendSlackNotification",
+        "title": "💬 Send Slack Notification",
+        "category": "Enterprise Integration",
+        "icon": "$(comment)"
+      },
+      {
+        "command": "coding.integration.triggerPipeline",
+        "title": "🚀 Trigger CI/CD Pipeline",
+        "category": "Enterprise Integration",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "coding.collaboration.start",
+        "title": "🎯 Start Collaboration Session",
+        "category": "Real-time Collaboration",
+        "icon": "$(live-share)"
+      },
+      {
+        "command": "coding.collaboration.join",
+        "title": "👥 Join Collaboration Session",
+        "category": "Real-time Collaboration",
+        "icon": "$(person-add)"
+      },
+      {
+        "command": "coding.collaboration.shareFile",
+        "title": "📄 Share Current File",
+        "category": "Real-time Collaboration",
+        "icon": "$(file-symlink-file)"
+      },
+      {
+        "command": "coding.pr.review",
+        "title": "🔍 Smart PR Review",
+        "category": "Enterprise PR Review",
+        "icon": "$(git-pull-request)"
+      },
+      {
+        "command": "coding.pr.viewPatterns",
+        "title": "📊 View PR Review Patterns",
+        "category": "Enterprise PR Review",
+        "icon": "$(graph-line)"
+      },
+      {
+        "command": "coding.models.dashboard",
+        "title": "🤖 AI Model Management Dashboard",
+        "category": "AI Model Management",
+        "icon": "$(robot)"
+      },
+      {
+        "command": "coding.models.startFineTuning",
+        "title": "🔧 Start Model Fine-Tuning",
+        "category": "AI Model Management",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "coding.models.startExperiment",
+        "title": "🧪 Start A/B Experiment",
+        "category": "AI Model Management",
+        "icon": "$(beaker)"
+      },
+      {
+        "command": "coding.models.analytics",
+        "title": "📊 Model Analytics",
+        "category": "AI Model Management",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "coding.testing.dashboard",
+        "title": "🧪 Advanced Testing Dashboard",
+        "category": "Advanced Testing",
+        "icon": "$(test-view-icon)"
+      },
+      {
+        "command": "coding.testing.generateSuite",
+        "title": "🔬 Generate Test Suite",
+        "category": "Advanced Testing",
+        "icon": "$(symbol-method)"
+      },
+      {
+        "command": "coding.testing.runMutation",
+        "title": "🧬 Run Mutation Testing",
+        "category": "Advanced Testing",
+        "icon": "$(extensions)"
+      },
+      {
+        "command": "coding.testing.runVisual",
+        "title": "👁️ Run Visual Regression Tests",
+        "category": "Advanced Testing",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "coding.testing.runLoad",
+        "title": "⚡ Run Load Testing",
+        "category": "Advanced Testing",
+        "icon": "$(zap)"
+      },
+      {
+        "command": "coding.multitenant.dashboard",
+        "title": "🏢 Multi-Tenant Dashboard",
+        "category": "Multi-Tenant Architecture",
+        "icon": "$(organization)"
+      },
+      {
+        "command": "coding.multitenant.createTenant",
+        "title": "🏗️ Create New Tenant",
+        "category": "Multi-Tenant Architecture",
+        "icon": "$(add)"
+      },
+      {
+        "command": "coding.multitenant.createWorkspace",
+        "title": "💼 Create Workspace",
+        "category": "Multi-Tenant Architecture",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "coding.multitenant.addUser",
+        "title": "👤 Add User to Tenant",
+        "category": "Multi-Tenant Architecture",
+        "icon": "$(person-add)"
+      },
+      {
+        "command": "coding.performance.dashboard",
+        "title": "📊 Performance Monitoring Dashboard",
+        "category": "Performance & Monitoring",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "coding.performance.startTrace",
+        "title": "🔍 Start Distributed Trace",
+        "category": "Performance & Monitoring",
+        "icon": "$(search)"
+      },
+      {
+        "command": "coding.performance.recordMetric",
+        "title": "📈 Record Custom Metric",
+        "category": "Performance & Monitoring",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "coding.performance.createAlert",
+        "title": "🚨 Create Performance Alert",
+        "category": "Performance & Monitoring",
+        "icon": "$(bell)"
       }
     ],
     "keybindings": [

@@ -9,13 +9,12 @@
 		"sourceMap": true,
 		"rootDir": "./src",
 		"strict": true,
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"esModuleInterop": true,
 		"resolveJsonModule": true,
 		"declaration": true,
 		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"ignoreDeprecations": "5.0"
+		"forceConsistentCasingInFileNames": true
 	},
 	"ts-node": {
 		"esm": true

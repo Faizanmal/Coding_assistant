@@ -17,6 +17,17 @@ import { infilechatCommand } from './infilechat';
 import { fixselectedcodeCommand, explainselectedcodeCommand } from './fixselectedcode';
 import { inlinesuggestionCommand } from './inlinesuggestion';
 import { registerLLMFixCommand, registerFixSelectedErrorCommands } from './hoverfixdiagnostic';
+
+// Enterprise Features
+import { registerEnterpriseSecurityCommands } from './enterprise-security';
+import { registerAnalyticsCommands } from './enterprise-analytics';
+import { registerEnterpriseIntegrationCommands } from './enterprise-integration-hub';
+import { registerCollaborationCommands } from './real-time-collaboration';
+import { registerSmartPRReviewCommands } from './pr-review-bot';
+import { registerAIModelManagementCommands } from './ai-model-management';
+import { registerAdvancedTestingCommands } from './advanced-testing-framework';
+import { registerMultiTenantCommands } from './multi-tenant-architecture';
+import { registerPerformanceMonitoringCommands } from './performance-monitoring';
 import { EnhancedDiagnostics } from './enhanceddiagnostics';
 import { codereviewcommand, suggestreviewcodecommand } from './codereview';
 import * as autoCodeReview from './autocodereview';
@@ -144,6 +155,19 @@ const highlightIntegration: {
 import { registerIntelligentProjectManagerCommands } from './intelligent-project-manager';
 import { registerAdvancedCodeGeneratorCommands } from './advanced-code-generator';
 import { registerAILearningSystemCommands } from './ai-learning-system';
+
+// New Revolutionary Features - Latest Implementation
+import { registerDependencyManagerCommands } from './dependency-manager';
+import { registerPerformanceOptimizerCommands } from './performance-optimizer';
+import { registerCodeMigrationCommands } from './code-migration-assistant';
+import { registerEnvConfigCommands } from './env-config-manager';
+import { registerNaturalLanguageCommands } from './natural-language-interface';
+
+// Phase 3 Features - Team Collaboration & Advanced Tools
+import { registerRealtimeCollaborationCommands } from './realtime-collaboration';
+import { registerSmartPRReviewCommands } from './pr-review-bot';
+import { registerAdvancedDebugCommands } from './advanced-debug-assistant';
+import { registerTeamKnowledgeCommands } from './team-knowledge-system';
 
 
 console.log("Current working Dir:", process.cwd());
@@ -564,6 +588,23 @@ export async function activate(context: vscode.ExtensionContext) {
   registerAdvancedCodeGeneratorCommands(context);
   registerAILearningSystemCommands(context);
   
+  // 🎯 Register Latest Revolutionary Features
+  console.log('🎯 Registering latest revolutionary features...');
+  registerDependencyManagerCommands(context);
+  registerPerformanceOptimizerCommands(context);
+  registerCodeMigrationCommands(context);
+  registerEnvConfigCommands(context);
+  registerNaturalLanguageCommands(context);
+  console.log('✅ Latest revolutionary features registered successfully');
+
+  // 🚀 Register Phase 3 Features - Team Collaboration & Advanced Tools
+  console.log('🚀 Registering Phase 3 team collaboration features...');
+  registerRealtimeCollaborationCommands(context);
+  registerSmartPRReviewCommands(context);
+  registerAdvancedDebugCommands(context);
+  registerTeamKnowledgeCommands(context);
+  console.log('✅ Phase 3 features registered successfully');
+  
   // Register Enhanced Security Scanner commands
   context.subscriptions.push(
     vscode.commands.registerCommand('coding.security.scanFile', () => {
@@ -573,6 +614,21 @@ export async function activate(context: vscode.ExtensionContext) {
       EnhancedSecurityScanner.scanWorkspace();
     })
   );
+
+  // Register Enterprise Features
+  registerEnterpriseSecurityCommands(context);
+  registerAnalyticsCommands(context);
+  registerEnterpriseIntegrationCommands(context);
+  registerCollaborationCommands(context);
+  registerSmartPRReviewCommands(context);
+  registerAIModelManagementCommands(context);
+  registerAdvancedTestingCommands(context);
+  registerMultiTenantCommands(context);
+  registerPerformanceMonitoringCommands(context);
+
+  console.log('🚀 Enterprise-grade features activated!');
+  console.log('🛡️ Security, Analytics, Integration, Collaboration, AI Models, Testing, Multi-tenant, and Performance Monitoring ready!');
+  console.log('🎯 Next-level VS Code extension loaded successfully!');
   
   // Register productivity features
   registerKnowledgeAssistantCommands(context);
